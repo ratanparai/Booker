@@ -18,11 +18,15 @@ router.get('/', function(req, res, next){
         
         var books = resultObj.GoodreadsResponse.search[0].results[0].work;
         
-        for(book in books) {
-            console.log(book.best_book[0].title);
-        }
+        // console.log(books[0].best_book[0].id[0]._);
+        // console.log(books.length);
         
-        // console.dir(resultObj.GoodreadsResponse.search[0].results[0].work[0].best_book[0].id[0]._);
+        var i;
+        for (i=0; i<books.length; i++) {
+            var singleBook;
+            console.log(books[i].best_book[0].title[0]);
+        }        
+        // console.dir(resultObj.GoodreadsResponse.search[0].results[0].work[1].best_book[0].id[0]._);
         
     });
     

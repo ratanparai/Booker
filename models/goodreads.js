@@ -35,6 +35,23 @@ goodreads.prototype.searchBook = function (query, cb) {
     });
 }
 
+goodreads.prototype.getBookInfo = function(goodreadId, cb) {
+    
+}
+
+// take a book object with all information and update local database as needed
+goodreads.prototype.updateLocal = function(book, cb) {
+    // check if the book is already in local database
+    
+    // if it is in the local database then skip rest of the work and enjoy
+    
+    // If the book is not in local database then insert the book info to local databse
+    
+    // download and save the image using the book insert _id file name
+    
+    // insert author info into author database if its not already inserted
+}
+
 var GR = new goodreads();
 
 module.exports = GR;
