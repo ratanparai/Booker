@@ -1,6 +1,14 @@
 var express = require('express');
-var User = require('../models/user')
+var User = require('../models/user');
 var router = express.Router();
+
+var Friendship = require('../models/friendship');
+
+// multipart form middleware
+var multer = require('multer');
+
+// move upload file
+var fs = require('fs');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -12,7 +20,7 @@ router.get('/create', function (req, res, next) {
     if(req.session.username){
         res.redirect('/');
     } else {
-        res.render('signup', {title : 'Users', signUp : true, loginInfo : {}});
+        res.render('signup', {title : 'Users', signUp : true, loginInfo: {loggedin: false}});
     }
    
 });
@@ -50,7 +58,8 @@ router.post('/create', function (req, res, next) {
                 title : 'Signup',
                 signUp : true,
                 error : true,
-                errorMessage : errorMessage
+                errorMessage : errorMessage,
+                loggedin : {}
             });
             
         } else {
@@ -100,6 +109,7 @@ router.post('/login', function(req, res, next){
                     // set session and redirect 
                     req.session.loggedin = true;
                     req.session.username = username;
+                    req.session.fullname = user.name;
                     req.session.userid = user._id;
                     console.log(req.session);
                     
@@ -109,7 +119,8 @@ router.post('/login', function(req, res, next){
                         login : true,
                         title: 'login',
                         error : true,
-                        errorMessage : 'Username and Password does not match!'
+                        errorMessage : 'Username and Password does not match!',
+                        loginInfo : {}
                     });
                 }
             });
@@ -118,7 +129,8 @@ router.post('/login', function(req, res, next){
                 login : true,
                 title: 'login',
                 error : true,
-                errorMessage : 'Username and Password does not match!'
+                errorMessage : 'Username and Password does not match!',
+                loginInfo : {}
             });
         }
         
@@ -136,9 +148,67 @@ router.get('/logout', function(req, res, next){
     
 });
 
-router.get('/view/:username', function(req, res, next){
+router.get('/view/:username/:action?', function(req, res, next){
+    var loginInfo = {};
+    if(req.session.username) {
+        //console.log('user logged in ' + req.session.username);
+        loginInfo.loggedin = true;
+        loginInfo.username = req.session.username;
+    } else {
+        //console.log('no user is logged in');
+    }
     // TODO show profile page
-    res.send('view username ' + req.params.username);    
+    
+    // get information about user
+    var currentUser = req.params.username;
+    User.findOne({username : currentUser}, function(err, userResult){
+        if( err) return console.dir(err);
+        
+        
+        
+        // get follower count
+        Friendship.find({user1: userResult._id}, function(err, friendsWith) {
+            
+            // check if the user is already following the browsing user
+            
+            
+            Friendship.findOne({user1: userResult._id, user2 : req.session.userid}, function(err, isFriend){
+                if (err) return console.log(err);
+                
+                // check action and show different layout for each action
+                var action = req.params.action;
+                
+                if (action === 'settings') {
+                    res.render('profile', {
+                        title : 'profile',
+                        session: req.session,
+                        loginInfo : loginInfo,
+                        user : userResult,
+                        follower : friendsWith.length,
+                        isFriend : isFriend,
+                        action: action
+                    });
+                } else {
+                    res.render('profile', {
+                        title : 'profile',
+                        session: req.session,
+                        loginInfo : loginInfo,
+                        user : userResult,
+                        follower : friendsWith.length,
+                        isFriend : isFriend,
+                        action : action
+                    });
+                }
+                
+            });
+            
+            
+        });
+        
+        
+        
+    });
+        
 });
 
 router.get('/profile', function(req, res, next){
@@ -147,6 +217,73 @@ router.get('/profile', function(req, res, next){
     } else {
         // show the users own profile
     }
+});
+
+// follow user action
+router.get('/follow/:userid/:username', function (req, res, next) {
+    
+    // if uer is not logged in go to login page
+    if (!req.session.userid) {
+        return res.redirect('/users/login');
+    }
+    
+    var userToFollow = req.params.userid;
+    // check if already following
+    Friendship.findOne({user2: req.session.userid, user1: userToFollow}, function(err, isFriend){
+        if (err) return console.dir(err);
+        
+        if(!isFriend) {
+            // ad new follwing information to database
+            
+    
+            var newFriend = new Friendship({
+                user2 : req.session.userid,
+                user1 : userToFollow
+            });
+            
+            newFriend.save(function(err){
+                if (err) return console.log(err);
+                
+                res.redirect('/users/view/' + req.params.username);
+            });
+        } else {
+            res.redirect('/users/view/' + req.params.username);
+        }
+    });
+    
+    
+});
+
+router.get('/unfollow/:userid/:username', function (req, res, next) {
+    var currentUser = req.params.userid;
+    
+    Friendship.findOneAndRemove({user1 : currentUser, user2 : req.session.userid}, function(err){
+       if (err) return console.dir(err);
+       
+       res.redirect('/users/view/' + req.params.username);
+    });
+});
+
+router.post('/updatesettings' ,multer({ dest: './uploads/'}).single('upl'), function(req,res){
+	console.log(req.body); //form fields
+	/* example output:
+	{ title: 'abc' }
+	 */
+	console.dir(req.file); //form files
+    console.log(__dirname);
+    
+    // fs.rename('../uploads/' + req.file.filename, )
+	/* example output:
+            { fieldname: 'upl',
+              originalname: 'grumpy.png',
+              encoding: '7bit',
+              mimetype: 'image/png',
+              destination: './uploads/',
+              filename: '436ec561793aa4dc475a88e84776b1b9',
+              path: 'uploads/436ec561793aa4dc475a88e84776b1b9',
+              size: 277056 }
+	 */
+	res.status(204).end();
 });
 
 

@@ -1,0 +1,49 @@
+extends layout
+
+block content
+    .container
+        .row
+            .col-md-3
+                img.single-book-image(src='/images/books/' + bookinfo._id + '.jpg')
+            
+            .col-md-9
+                h2.title #{bookinfo.title}
+                h4.author-name 
+                    a(href='/author/'+author._id) #{author.name}
+                .book-description !{bookinfo.description}
+    hr
+    
+    .container
+        .row
+            .col-md-12
+                .panel.panel-primary
+                    .panel-heading Currently reading
+                    .panel-body Panel body
+    
+    hr
+    .container
+        .row
+            .col-md-12
+                form(action='/book/comment', method='post')
+                    h4 Review the book
+                    .form-group
+                        textarea.form-control(rows='5', name='text_comment')
+                        input(type='hidden',  name='book_id', value=bookinfo._id)
+                    .form-group
+                        button.btn.btn-default Submit
+                        
+    hr 
+    if comments.length !== 0
+        .container
+            .row
+                .col-md-12
+                    h4 comments
+                    
+                    each comment in comments
+                        .panel.panel-default
+                            .panel-heading 
+                                b #{comment.user_fullname} 
+                                br 
+                                i ( #{comment.comment_on})
+                            .panel-body #{comment.comment}
+                    

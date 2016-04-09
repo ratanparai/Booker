@@ -1,0 +1,47 @@
+.container
+    .row
+        .col-md-12
+            form(action='/users/updatesettings', method='post' enctype='multipart/form-data')
+                .panel.panel-default
+                    .panel-heading
+                        b ACCOUNT
+                    .panel-body
+                        .row
+                            .col-md-4.profile-image-thumb
+                                img.img-circle.profile-setting-image(src='/images/profile/default.png')
+                            .col-md-8.profile-image-upload
+                                input.form-control(type='file', name='upl')
+                        .row.after-image-upload
+                            .col-md-4.setting-left-part
+                                label(for='username') Username:
+                            .col-md-8
+                                input.form-control(type='text' readonly='true', value=user.username)
+                        .row.mid-gap
+                            .col-md-4.setting-left-part
+                                label(for='email') Email:
+                            .col-md-8
+                                input.form-control(type='text', name='email', value=user.email)
+                        .row.mid-gap
+                            .col-md-4.setting-left-part
+                                label(for='DisplayName') Display name:
+                            .col-md-8
+                                input.form-control(type='text', name='name', value=user.name)
+                            
+                    
+                .panel.panel-default
+                    .panel-heading
+                        b CHANGE PASSWORD
+                    .panel-body
+                        .row.mid-gap
+                            .col-md-4.setting-left-part
+                                label(for='newPassowrd') New Password:
+                            .col-md-8
+                                input.form-control(type='password', name='newpassword')
+                        .row.mid-gap
+                            .col-md-4.setting-left-part
+                                label(for='confirmPassowrd') Confirm Password:
+                            .col-md-8
+                                input.form-control(type='password', name='confirmassword')
+                                
+                .row.setting-save-button
+                    button.btn.btn-danger(type='submit') SAVE SETTINGS

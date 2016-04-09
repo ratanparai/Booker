@@ -1,0 +1,45 @@
+extends layout
+
+block content
+    .container.profile-banner
+        .row
+            .col-md-2
+                .profile-image
+                    img.img-circle(src='/images/profile/default.png')
+                
+            .col-md-10
+                .profile-short-info
+                    h4 #{user.name}
+                    p #{follower} follower 
+                    -if (user._id != session.userid) {
+                        if isFriend
+                            if session.userid
+                                a.btn.btn-danger(href='/users/unfollow/'+ user._id + '/' + user.username) Un-Follow
+                            else 
+                                a.btn.btn-primary(href='/users/follow/'+ user._id + '/' + user.username) Follow
+                        else 
+                            a.btn.btn-primary(href='/users/follow/'+ user._id + '/' + user.username) Follow
+                    - }
+
+    .container
+        .row
+            .profile-nav
+                ul.prof-nav
+                    li  
+                        a(class = action ? '' : 'active' ,href='/users/view/'+ user.username ) History
+                    li 
+                        a(class= action == 'progress' ? 'active' : '' ,href='/users/view/'+ user.username +'/progress/') Progress
+                    li
+                        a(class= action == 'network' ? 'active' : '' ,href='/users/view/'+ user.username +'/network/') Network
+                    li 
+                        a(class= action == 'settings' ? 'active' : '' ,href='/users/view/'+ user.username +'/settings/') Settings
+                      
+    hr
+    if action == 'settings'
+        include ./profile_setting
+        
+    if action == 'network'
+        include ./profile_network
+   
+        
+    

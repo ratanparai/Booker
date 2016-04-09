@@ -12,7 +12,8 @@ var userSchema = new Schema({
    password : {type: String},
    email : {type: String},
    created_at : Date,
-   updated_at : Date
+   updated_at : Date,
+   profile_picture: String
 });
 
 /**

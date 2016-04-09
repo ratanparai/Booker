@@ -13,8 +13,13 @@
     "express": "~4.13.1",
     "express-session": "^1.13.0",
     "jade": "~1.11.0",
+    "mime": "^1.3.4",
+    "moment": "^2.12.0",
     "morgan": "~1.6.1",
+    "multer": "^1.1.0",
+    "request": "^2.70.0",
     "serve-favicon": "~2.3.0",
+    "timeago": "^1.5.2",
     "xml2js": "^0.4.16"
   }
 }

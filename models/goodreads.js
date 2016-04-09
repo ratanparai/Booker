@@ -13,7 +13,7 @@ function goodreads() {
 
 goodreads.prototype.searchBook = function (query, cb) {
     var requestUrl = this.url + 'search/index.xml?q=' + query + '&key=' + this.key;
-    console.log('sending query ' + query);
+    // console.log('sending query ' + query);
     http.get(requestUrl, function(res){
         var body = '';
         
@@ -36,7 +36,27 @@ goodreads.prototype.searchBook = function (query, cb) {
 }
 
 goodreads.prototype.getBookInfo = function(goodreadId, cb) {
+    var requestUrl = this.url + 'book/show.xml?id=' + goodreadId + '&key=' + this.key;
     
+    http.get(requestUrl, function(res){
+        var body = '';
+        
+        res.on('data', function(chunk){
+            body += chunk;
+        });
+        
+        res.on('end', function(){
+            parser.parseString(body, function(err, result){
+                if (err) return cb(err);
+                
+                var jsonResult = JSON.stringify(result);
+                return cb(null, jsonResult);
+            });
+        });
+        
+    }).on('error', function (err) {
+        return cb(err);
+    })
 }
 
 // take a book object with all information and update local database as needed

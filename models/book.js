@@ -5,14 +5,14 @@ var Schema = mongoose.Schema;
 // create a Schema
 var bookSchema = new Schema({
    title : String,
-   goodreads_id : Number,
-   isbn : Number,
-   isbn13 : Number,
+   goodreads_id : {type: Number, unique : true},
+   isbn : String,
+   isbn13 : String,
    author_id : String,
    image : String,
    publication_date : Date,
    language : String,
-   description : String,
+   description : String
 });
 
 // the schema is useless untill a model is created 

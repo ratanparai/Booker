@@ -4,7 +4,6 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res, next) {
     var loginInfo = {};
-    console.log(req.session.username);
     
     if(req.session.username) {
         console.log('user logged in ' + req.session.username);

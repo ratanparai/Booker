@@ -7,3 +7,82 @@ body {
 a {
   color: #00B7FF;
 }
+
+.single-book-image {
+    padding-top: 23px;
+    width: 100%;
+}
+
+img {
+    width: 100%;
+}
+
+.profile-banner {
+    background-image: url(/images/profile/background2.jpg);
+    height: 172px;
+}
+
+.profile-short-info{
+    color: white;
+    padding-top: 25px;
+}
+
+.prof-nav {
+    padding-top: 15px;
+    list-style-type: none;
+    color: white;
+    background-color: black;
+    height: 44px;
+}
+
+.profile-nav {
+    height: 25px;
+}
+
+.prof-nav li {
+    display: inline;
+    padding: 5px;
+    
+}
+
+.prof-nav li a {
+    color: white;
+}
+
+.prof-nav li a.active {
+    color: red;
+}
+
+.profile-image {
+    padding-top: 17px;
+}
+
+.setting-left-part {
+    text-align: right;
+}
+
+.profile-setting-image{
+    height: 100px;
+    width: 100px;
+    align-content: right;
+}
+
+.after-image-upload{
+    padding-top: 30px;
+}
+
+.profile-image-upload {
+    padding-top: 25px;
+}
+
+.profile-image-thumb {
+    text-align: right;
+}
+
+.mid-gap {
+    padding-top: 15px;
+}
+
+.setting-save-button {
+    text-align: center;
+}
