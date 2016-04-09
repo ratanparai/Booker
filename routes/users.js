@@ -59,7 +59,7 @@ router.post('/create', function (req, res, next) {
                 signUp : true,
                 error : true,
                 errorMessage : errorMessage,
-                loggedin : {}
+                loginInfo : {}
             });
             
         } else {
