@@ -13,7 +13,7 @@ var userSchema = new Schema({
    email : {type: String},
    created_at : Date,
    updated_at : Date,
-   profile_picture: String
+   profile_picture: {type : String, default: 'default.png'}
 });
 
 /**

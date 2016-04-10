@@ -31,8 +31,9 @@ block content
                         a(class= action == 'progress' ? 'active' : '' ,href='/users/view/'+ user.username +'/progress/') Progress
                     li
                         a(class= action == 'network' ? 'active' : '' ,href='/users/view/'+ user.username +'/network/') Network
-                    li 
-                        a(class= action == 'settings' ? 'active' : '' ,href='/users/view/'+ user.username +'/settings/') Settings
+                    if user._id == session.userid
+                        li 
+                            a(class= action == 'settings' ? 'active' : '' ,href='/users/view/'+ user.username +'/settings/') Settings
                       
     hr
     if action == 'settings'

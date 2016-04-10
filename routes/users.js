@@ -1,6 +1,7 @@
 var express = require('express');
 var User = require('../models/user');
 var router = express.Router();
+var mime = require('mime');
 
 var Friendship = require('../models/friendship');
 
@@ -179,6 +180,10 @@ router.get('/view/:username/:action?', function(req, res, next){
                 var action = req.params.action;
                 
                 if (action === 'settings') {
+                    
+                    if(req.session.username != currentUser) {
+                        return res.redirect('/');
+                    }
                     res.render('profile', {
                         title : 'profile',
                         session: req.session,
@@ -305,12 +310,12 @@ router.get('/unfollow/:userid/:username', function (req, res, next) {
 });
 
 router.post('/updatesettings' ,multer({ dest: './uploads/'}).single('upl'), function(req,res){
-	console.log(req.body); //form fields
+	//console.log(req.body); //form fields
 	/* example output:
 	{ title: 'abc' }
 	 */
-	console.dir(req.file); //form files
-    console.log(__dirname);
+	console.dir(req.file.mimetype); //form files
+    var extension = mime.extension(req.file.mimetype);
     
     // fs.rename('../uploads/' + req.file.filename, )
 	/* example output:
@@ -323,6 +328,12 @@ router.post('/updatesettings' ,multer({ dest: './uploads/'}).single('upl'), func
               path: 'uploads/436ec561793aa4dc475a88e84776b1b9',
               size: 277056 }
 	 */
+    
+    fs.rename(req.file.path, './public/images/profile/' + req.session.userid + '.'+ extension, function(err){
+        if (err) console.log(err);
+    });
+    
+    
 	res.status(204).end();
 });
 
