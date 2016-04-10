@@ -4,8 +4,8 @@ var Schema = mongoose.Schema;
 
 // create a Schema
 var friendshipSchema = new Schema({
-   user1 : {type: String, required: true},
-   user2 : {type: String, required: true},
+   user1 : {type: Schema.Types.ObjectId, ref: 'User'},
+   user2 : {type: Schema.Types.ObjectId, ref: 'User'}
 });
 
 // the schema is useless untill a model is created 

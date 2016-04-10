@@ -188,6 +188,46 @@ router.get('/view/:username/:action?', function(req, res, next){
                         isFriend : isFriend,
                         action: action
                     });
+                } else if(action=='network') {
+                    // get follower and following user data 
+                    
+                    Friendship
+                        .find({user1 : userResult._id})
+                        .populate('user2')
+                        .exec(function(err, followers){
+                            if (err) return console.log(err);
+                            
+                            
+                            // now retrive follwing list
+                            
+                            Friendship
+                                .find({user2: userResult._id})
+                                .populate('user1')
+                                .exec(function(err, followings){
+                                    if (err) return console.log(err);
+                                    
+                                    // Now render the page
+                                    res.render('profile', {
+                                        title : 'profile',
+                                        session: req.session,
+                                        loginInfo : loginInfo,
+                                        user : userResult,
+                                        follower : friendsWith.length,
+                                        isFriend : isFriend,
+                                        action: action,
+                                        followers : followers,
+                                        followings : followings
+                                    });
+                                    
+                                });
+                            
+                        });
+                        
+                        
+                        // get list of fo
+                   
+                    
+                    
                 } else {
                     res.render('profile', {
                         title : 'profile',

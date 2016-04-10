@@ -3,44 +3,52 @@
         .col-md-12
             .panel.panel-default
                 .panel-heading
-                    b FOLLOWING
+                    b FOLLOWERS
                     
                 .panel-body
                     .row
-                        .col-md-2
-                            img(src='#')
-                        .col-md-2
-                            img(src='#')
-                        .col-md-2
-                            img(src='#')
-                        .col-md-2
-                            img(src='#')
-                        .col-md-2
-                            img(src='#')
-                        .col-md-2
-                            img(src='#')
+                        each flwer in followers
+                            .col-md-2
+                                a(href="/users/view/"+flwer.user2.username)
+                                    img(src='#')
+                                p #{flwer.user2.name}
+                        // .col-md-2
+                        //     img(src='#')
+                        // .col-md-2
+                        //     img(src='#')
+                        // .col-md-2
+                        //     img(src='#')
+                        // .col-md-2
+                        //     img(src='#')
+                        // .col-md-2
+                        //     img(src='#')
 
 .container
     .row
         .col-md-12
             .panel.panel-default
                 .panel-heading
-                    b FOLLOWERS
+                    b FOLLOWINGS
                     
                 .panel-body
                     .row
-                        .col-md-2
-                            img(src='#')
-                        .col-md-2
-                            img(src='#')
-                        .col-md-2
-                            img(src='#')
-                        .col-md-2
-                            img(src='#')
-                        .col-md-2
-                            img(src='#')
-                        .col-md-2
-                            img(src='#')
+                        each flwing in followings
+                            .col-md-2
+                                a(href="/users/view/" + flwing.user1.username)
+                                    img(src='#')
+                                p #{flwing.user1.name}
+                        // .col-md-2
+                        //     img(src='#')
+                        // .col-md-2
+                        //     img(src='#')
+                        // .col-md-2
+                        //     img(src='#')
+                        // .col-md-2
+                        //     img(src='#')
+                        // .col-md-2
+                        //     img(src='#')
+                        // .col-md-2
+                        //     img(src='#')
                             
                 
                         
