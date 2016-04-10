@@ -12,7 +12,9 @@ var bookSchema = new Schema({
    image : String,
    publication_date : Date,
    language : String,
-   description : String
+   description : String,
+   total_rating : Number,
+   total_vote : Number
 });
 
 // the schema is useless untill a model is created 
