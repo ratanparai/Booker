@@ -10,8 +10,8 @@
                         each flwer in followers
                             .col-md-2
                                 a(href="/users/view/"+flwer.user2.username)
-                                    img(src='#')
-                                p #{flwer.user2.name}
+                                    img.img-circle(src='/images/profile/' + flwer.user2.profile_picture)
+                                p.network-name #{flwer.user2.name}
                         // .col-md-2
                         //     img(src='#')
                         // .col-md-2
@@ -35,8 +35,8 @@
                         each flwing in followings
                             .col-md-2
                                 a(href="/users/view/" + flwing.user1.username)
-                                    img(src='#')
-                                p #{flwing.user1.name}
+                                    img.img-circle(src='/images/profile/' + flwing.user1.profile_picture)
+                                p.network-name #{flwing.user1.name}
                         // .col-md-2
                         //     img(src='#')
                         // .col-md-2

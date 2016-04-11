@@ -1,14 +1,14 @@
 .container
     .row
         .col-md-12
-            form(action='/users/updatesettings', method='post' enctype='multipart/form-data')
+            form#profile-update-form(action='/users/updatesettings', method='post' enctype='multipart/form-data')
                 .panel.panel-default
                     .panel-heading
                         b ACCOUNT
                     .panel-body
                         .row
                             .col-md-4.profile-image-thumb
-                                img.img-circle.profile-setting-image(src='/images/profile/default.png')
+                                img.img-circle.profile-setting-image(src='/images/profile/' + user.profile_picture)
                             .col-md-8.profile-image-upload
                                 input.form-control(type='file', name='upl')
                         .row.after-image-upload
@@ -35,13 +35,21 @@
                         .row.mid-gap
                             .col-md-4.setting-left-part
                                 label(for='newPassowrd') New Password:
-                            .col-md-8
-                                input.form-control(type='password', name='newpassword')
+                            .col-md-8#newPasswordBox
+                                input.form-control(type='password', id='newpassword' ,name='newpassword')
                         .row.mid-gap
                             .col-md-4.setting-left-part
                                 label(for='confirmPassowrd') Confirm Password:
-                            .col-md-8
-                                input.form-control(type='password', name='confirmassword')
+                            .col-md-8#confirmPasswordBox
+                                input.form-control(type='password', id='confirmpassword', name='confirmassword')
                                 
                 .row.setting-save-button
                     button.btn.btn-danger(type='submit') SAVE SETTINGS
+                    
+                .modal.fade#myModal(tabindex="-1", role="dialog", aria-labelledby="mySmallModalLabel")
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                p.error-text ERROR
+                            .modal-body
+                                p.error-text The passwords you typed do not match

@@ -86,3 +86,14 @@ img {
 .setting-save-button {
     text-align: center;
 }
+
+.network-name {
+    text-align: center;
+    padding-top: 10px;
+}
+
+.error-text{
+    color: darkred;
+    text-align: center;
+}
+

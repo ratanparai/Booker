@@ -11,6 +11,10 @@ var multer = require('multer');
 // move upload file
 var fs = require('fs');
 
+// for updating password
+var bcrypt = require('bcryptjs');
+var SALT_WORK_FACTOR = 10;
+
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
@@ -310,12 +314,52 @@ router.get('/unfollow/:userid/:username', function (req, res, next) {
 });
 
 router.post('/updatesettings' ,multer({ dest: './uploads/'}).single('upl'), function(req,res){
+    // only upload if the user is loggedin else redirect
+    if(!req.session.userid) {
+        return res.redirect('/');
+    }
 	//console.log(req.body); //form fields
 	/* example output:
 	{ title: 'abc' }
 	 */
-	console.dir(req.file.mimetype); //form files
-    var extension = mime.extension(req.file.mimetype);
+    if(req.file){
+        var extension = mime.extension(req.file.mimetype);
+        fs.rename(req.file.path, './public/images/profile/' + req.session.userid + '.'+ extension, function(err){
+            if (err) console.log(err);
+        });
+        
+        User.findByIdAndUpdate(req.session.userid,{
+             profile_picture : req.session.userid + '.' + extension
+        }, function(err){
+            if (err) return console.log(err);
+            
+            
+        });
+        
+    }
+    
+    // if need to update password
+    if(req.body.newpassword) {
+        var newPassword = req.body.newpassword;
+        bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt){
+            // if error throw it
+            if (err) return next(err);
+            
+            bcrypt.hash(newPassword, salt, function(err,hash){
+                if (err) return next(err);
+                    
+                newPassword = hash;
+                
+                User.findByIdAndUpdate(req.session.userid,{
+                    password : newPassword
+                }, function(err){
+                    if (err) return console.log(err);
+                });
+                
+            });
+        });
+    }
+    
     
     // fs.rename('../uploads/' + req.file.filename, )
 	/* example output:
@@ -329,12 +373,19 @@ router.post('/updatesettings' ,multer({ dest: './uploads/'}).single('upl'), func
               size: 277056 }
 	 */
     
-    fs.rename(req.file.path, './public/images/profile/' + req.session.userid + '.'+ extension, function(err){
-        if (err) console.log(err);
+    
+    
+    User.findByIdAndUpdate(req.session.userid,{
+        name : req.body.name,
+        email: req.body.email,
+    }, function(err){
+        if (err) return console.log(err);
     });
     
     
-	res.status(204).end();
+    
+    
+	res.redirect('back');
 });
 
 

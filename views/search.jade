@@ -8,8 +8,8 @@ block content
             each user in users
                 .col-md-2
                     a(href='users/view/'+ user.username)
-                        img.img-thumbnail(src='/images/users/' + user._id + '.jpg')
-                    .title #{user.name}
+                        img.img-thumbnail(src='/images/profile/' + user.profile_picture)
+                    .title.network-name #{user.name}
             
     .container
         .row
@@ -22,7 +22,7 @@ block content
                 .col-md-2
                     a(href='/book/'+ item._id)
                         img.img-thumbnail(src='/images/books/' + item._id + '.jpg')
-                    .title #{item.title}
+                    .title.network-name #{item.title}
                     - i++
 
                 
@@ -35,5 +35,5 @@ block content
                 .col-md-2
                     a(href='/author/'+ author._id)
                         img.img-thumbnail(src='/images/authors/' + author._id + '.jpg')
-                    .title #{author.name}
+                    .title.network-name #{author.name}
         
