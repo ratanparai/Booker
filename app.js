@@ -47,6 +47,14 @@ app.use(function(req, res, next) {
 
 // error handlers
 
+/**
+ * Error handlers for API request
+ */
+app.use('/api', function(err, req, res, next){
+    res.status(err.status || 500);
+    res.json(err.message);
+});
+
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {

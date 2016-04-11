@@ -97,16 +97,13 @@ router.post('/login', function(req, res, next){
     var username = req.body.username;
     var password = req.body.password;
     
-    console.log(username);
-    console.log(password);
     
     User.findOne({username : username}, function(err, user){
         // TODO show full error message
-        if(err) throw err;
+        if(err) return next(err);
         
         
         if(user) {
-            console.log('user found : ' + user.username);
             user.comparePassword(password, function(err, isMatch){
                 if (err) throw err;
                 
