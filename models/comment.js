@@ -4,8 +4,8 @@ var Schema = mongoose.Schema;
 
 // create a Schema
 var commentSchema = new Schema({
-   book_id : String,
-   user_id : String,
+   book_id : {type: Schema.Types.ObjectId, ref: 'Book'},
+   user_id : {type: Schema.Types.ObjectId, ref: 'User'},
    user_fullname : String,
    comment : String,
    comment_on: Date,

@@ -3,16 +3,15 @@ var Schema = mongoose.Schema;
 
 
 // create a Schema
-var progressSchema = new Schema({
+var readSchema = new Schema({
    book_goodreads_id : Number,
-   user_id : {type: Schema.Types.ObjectId, ref: 'User'},
-   percentage : Number,
-   last_update : Date
+   user_id :{type: Schema.Types.ObjectId, ref: 'User'},
+   date : Date
 });
 
 // the schema is useless untill a model is created 
-var Progress = mongoose.model('Progress', progressSchema);
+var Read = mongoose.model('Read', readSchema);
 
 
 // make this available to our Node application
-module.exports = Progress;
+module.exports = Read;

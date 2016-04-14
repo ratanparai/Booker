@@ -22,12 +22,13 @@ html
                 ul.nav.navbar-nav
                     +navItem('/books', 'Books', books)
                     +navItem('#', 'Download', download)
-                    if loginInfo.loggedin
-                        +navItem('/users/view/'+loginInfo.username, loginInfo.username, profile)
-                        +navItem('/users/logout', 'Log out', logout )
-                    else
-                        +navItem('/users/create', 'Sign Up', signUp) 
-                        +navItem('/users/login', 'Log in', login)
+                    if loginInfo
+                        if loginInfo.loggedin
+                            +navItem('/users/view/'+loginInfo.username, loginInfo.username, profile)
+                            +navItem('/users/logout', 'Log out', logout )
+                        else
+                            +navItem('/users/create', 'Sign Up', signUp) 
+                            +navItem('/users/login', 'Log in', login)
                     
                     
                 form.navbar-form.navbar-right(role='search' action="/search" method="get")
