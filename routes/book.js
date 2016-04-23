@@ -5,6 +5,7 @@ var Book = require('../models/book');
 var User = require('../models/user')
 var Author = require('../models/author')
 var Comment = require('../models/comment');
+var Progress = require('../models/progress');
 
 
 /* GET home page. */
@@ -36,13 +37,34 @@ router.get('/:id', function(req, res, next){
                     if(err) return console.dir(err);
                    
                     
-                    res.render('book', {
-                        title : book.title,
-                        bookinfo: book,
-                        author : author,
-                        loginInfo : loginInfo,
-                        comments : comment
-                    });
+                    // Friendship
+                    //     .find({user1 : userResult._id})
+                    //     .populate('user2')
+                    //     .exec(function(err, followers){
+                    //         if (err) return console.log(err);
+                    
+                    Progress
+                        .find({book_id:book._id})
+                        .populate('user_id')
+                        .exec(function(err, progresses){
+                            if (err) return  console.dir(err);
+                            
+                            
+                            //console.log(progresses.user_id.name);
+                            
+                            res.render('book', {
+                                title : book.title,
+                                bookinfo: book,
+                                author : author,
+                                loginInfo : loginInfo,
+                                comments : comment,
+                                progresses : progresses
+                            });
+                        });
+                            
+                    
+                    
+                    
                 });
                 
                 

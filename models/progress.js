@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 
 // create a Schema
 var progressSchema = new Schema({
-   book_goodreads_id : Number,
+   book_id : {type: Schema.Types.ObjectId, ref: 'Book'},
    user_id : {type: Schema.Types.ObjectId, ref: 'User'},
    percentage : Number,
    last_update : Date

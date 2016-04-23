@@ -65,7 +65,7 @@ router.get('/', function(req, res, next) {
 /**
  * Check authorization 
  */
-router.post('/auth', function(req, res, next){
+router.get('/auth', function(req, res, next){
     res.status(200);
     res.json({message : "Login successful.", user: req.myAuth});
 });
@@ -197,13 +197,13 @@ router.get('/search/book', function(req, res,next){
  * get book progress percentage
  */
 
-router.get('/progress/:book_goodreads_id', function(req, res, next){
+router.get('/progress/:book_id', function(req, res, next){
     var userid = req.myAuth.userid;
     
-    if(req.params.book_goodreads_id) {
-        var book_goodreads_id = req.params.book_goodreads_id;
+    if(req.params.book_id) {
+        var book_goodreads_id = req.params.book_id;
         
-        Progress.findOne({book_goodreads_id: book_goodreads_id, user_id : userid}, function(err, progressRes){
+        Progress.findOne({book_id: book_id, user_id : userid}, function(err, progressRes){
             if(err) console.dir(err);
             
             if(progressRes) {
@@ -229,18 +229,18 @@ router.post('/progress', function(req, res, next){
         return res.status(400).json({message : "Bad request"});
     }
     
-    var book_goodreads_id = req.body.book_id;
+    var book_id = req.body.book_id;
     var progress = req.body.progress;
     var userid = req.myAuth.userid;
     
     // find and delete any previous progress
     
-    Progress.findOneAndRemove({book_goodreads_id: book_goodreads_id, user_id : userid}, function(err){
+    Progress.remove({book_id: book_id, user_id : userid}, function(err){
         if(err) console.dir(err);
         
         // save progress
         var myPorgress = new Progress({
-            book_goodreads_id : book_goodreads_id,
+            book_id : book_id,
             user_id : userid,
             percentage : progress,
             last_update : new Date()
@@ -251,17 +251,6 @@ router.post('/progress', function(req, res, next){
             
             res.json({message: "Book progress update successful"});
         });
-    });
-    
-    
-    
-    // check if the book is already in the database
-    Book.findOne({goodreads_id: book_goodreads_id}, function(err, bookRes){
-        if(err) console.dir(err);
-        
-        if(!bookRes){
-            goodreads.addBookUsingGoodreadsId(book_goodreads_id);
-        }
     });
 });
 
@@ -274,9 +263,10 @@ router.post('/read', function(req, res, next){
         return res.status(400).json({message : "Bad request"});
     }
     
-    var goodreads_book_id = req.body.book_id;
+    var book_id = req.body.book_id;
     
     // [async] remove progress of the book if any
+    // TODO TODO TODO
      
 });
 

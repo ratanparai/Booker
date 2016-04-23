@@ -18,7 +18,14 @@ block content
             .col-md-12
                 .panel.panel-primary
                     .panel-heading Currently reading
-                    .panel-body Panel body
+                    .panel-body 
+                        .row
+                            each progress in progresses
+                                - number = Math.round(progress.percentage)
+                                .col-md-2
+                                    img.img-circle(src='/images/profile/' + progress.user_id.profile_picture)
+                                    .progress
+                                        .progress-bar(role="progressbar", aria-valuenow=number  aria-valuemin="0", aria-valuemax="100", style="width:#{number}%") #{number}%
     
     hr
     .container
