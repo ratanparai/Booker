@@ -16,14 +16,24 @@ var api = require('./routes/api');
 
 var app = express();
 
-// setup socket.io
 var http = require('http');
 var server = http.createServer(app);
 var io = require("socket.io").listen(server);
-io.on('connection', function(){
-  console.log('client connected');
-});
 server.listen(8056);
+
+var socketMiddleWare = function(req, res, next){
+  io.on('connection', function(socket){
+    console.log(io.engine.clientsCount + " client connected.");
+    req.socket = socket;
+    
+    socket.on('disconnect', function(){
+      console.log(io.engine.clientsCount + " client connected.");
+    });
+    
+  });
+  next();
+};
+
 
 
 // view engine setup
@@ -46,11 +56,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 
-var users = require('./routes/users')(io);
-app.use('/users', users);
+var users = require('./routes/users');
+app.use('/users', socketMiddleWare, users);
 
-var search = require('./routes/search')(io);
-app.use('/search', search);
+var search = require('./routes/search');
+app.use('/search', socketMiddleWare, search);
 
 app.use('/book', book);
 app.use('/api', api);
