@@ -9,12 +9,22 @@ var mongoose = require('mongoose');
 mongoose.connect("mongodb://localhost/Booker")
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
+
 var search = require('./routes/search');
 var book = require('./routes/book');
 var api = require('./routes/api');
 
 var app = express();
+
+// setup socket.io
+var http = require('http');
+var server = http.createServer(app);
+var io = require("socket.io").listen(server);
+io.on('connection', function(){
+  console.log('client connected');
+});
+server.listen(8056);
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -33,7 +43,10 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+
+var users = require('./routes/users')(io);
 app.use('/users', users);
+
 app.use('/search', search);
 app.use('/book', book);
 app.use('/api', api);

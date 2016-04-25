@@ -201,7 +201,7 @@ router.get('/progress/:book_id', function(req, res, next){
     var userid = req.myAuth.userid;
     
     if(req.params.book_id) {
-        var book_goodreads_id = req.params.book_id;
+        var book_id = req.params.book_id;
         
         Progress.findOne({book_id: book_id, user_id : userid}, function(err, progressRes){
             if(err) console.dir(err);

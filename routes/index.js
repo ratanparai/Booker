@@ -13,7 +13,6 @@ router.get('/', function(req, res, next) {
         Friendship.find({user2: req.session.userid}, function(err, doc){
             if (err) return console.dir(err);
             
-            console.log(doc.user1);
             
             var userlist = _.pluck(doc, 'user1');
             console.dir(userlist);
