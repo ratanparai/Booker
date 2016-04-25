@@ -12,16 +12,7 @@
                                 a(href="/users/view/"+flwer.user2.username)
                                     img.img-circle(src='/images/profile/' + flwer.user2.profile_picture)
                                 p.network-name #{flwer.user2.name}
-                        // .col-md-2
-                        //     img(src='#')
-                        // .col-md-2
-                        //     img(src='#')
-                        // .col-md-2
-                        //     img(src='#')
-                        // .col-md-2
-                        //     img(src='#')
-                        // .col-md-2
-                        //     img(src='#')
+
 
 .container
     .row
@@ -32,12 +23,13 @@
                     
                 .panel-body
                     .row
-                        each flwing in followings
-                            .col-md-2
-                                a(href="/users/view/" + flwing.user1.username)
-                                    img.img-circle(src='/images/profile/' + flwing.user1.profile_picture)
-                                p.network-name #{flwing.user1.name}
-                        // .col-md-2
+                        if followings
+                            each flwing in followings
+                                .col-md-2
+                                    a(href="/users/view/" + flwing.user1.username)
+                                        img.img-circle(src='/images/profile/' + flwing.user1.profile_picture)
+                                    p.network-name #{flwing.user1.name}
+                            // .col-md-2
                         //     img(src='#')
                         // .col-md-2
                         //     img(src='#')

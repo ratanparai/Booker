@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var Friendship = require('../models/friendship');
+var User = require('../models/user');
+var Progress = require('../models/progress');
+var Book = require('../models/book');
 
 var _ = require('underscore');
 
@@ -17,7 +20,28 @@ router.get('/', function(req, res, next) {
             var userlist = _.pluck(doc, 'user1');
             console.dir(userlist);
             
-            return res.send("User response");
+            // complex query start :D 
+            Progress
+                .find()
+                .where('user_id').in(userlist)
+                .populate('book_id user_id')
+                .limit(10)
+                .exec(function(err, progressData){
+                    if (err) return console.log(err)
+                    
+                    
+                   // console.log(JSON.stringify(progressData));
+                   // console.dir(progressData[0].book_id.title);
+                    
+                    return res.render('index', { 
+                        title: 'Booker',
+                        progress : progressData,
+                        loginInfo : loginInfo
+                        });
+                });
+            
+            res.send("User response");
+            res.end();
         });
         
         

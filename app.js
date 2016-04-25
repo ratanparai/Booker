@@ -10,7 +10,7 @@ mongoose.connect("mongodb://localhost/Booker")
 
 var routes = require('./routes/index');
 
-var search = require('./routes/search');
+
 var book = require('./routes/book');
 var api = require('./routes/api');
 
@@ -38,7 +38,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 // session
 app.use(session({
-    secret : 'this is my secret'    
+    secret : 'this is my secret',
+    resave: true,
+    saveUninitialized: true  
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -47,7 +49,9 @@ app.use('/', routes);
 var users = require('./routes/users')(io);
 app.use('/users', users);
 
+var search = require('./routes/search')(io);
 app.use('/search', search);
+
 app.use('/book', book);
 app.use('/api', api);
 

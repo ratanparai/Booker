@@ -239,6 +239,8 @@ var returnRouter = function(io) {
                     
                         
                         
+                    } else if(action == 'progress') {
+                        // show progress
                     } else {
                         res.render('profile', {
                             title : 'profile',
@@ -329,6 +331,7 @@ var returnRouter = function(io) {
             fs.rename(req.file.path, './public/images/profile/' + req.session.userid + '.'+ extension, function(err){
                 if (err) console.log(err);
                 
+                io.sockets.emit('refresh profile page', {url : '/images/profile/' + req.session.userid + '.' + extension});
                 
             });
             
