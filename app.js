@@ -8,6 +8,11 @@ var session = require('express-session');
 var mongoose = require('mongoose');
 mongoose.connect("mongodb://localhost/Booker")
 
+// redis
+var redis = require('redis');
+global.pub = redis.createClient();
+global.sub = redis.createClient();
+
 var routes = require('./routes/index');
 
 
@@ -21,18 +26,19 @@ var server = http.createServer(app);
 var io = require("socket.io").listen(server);
 server.listen(8056);
 
-var socketMiddleWare = function(req, res, next){
-  io.on('connection', function(socket){
-    console.log(io.engine.clientsCount + " client connected.");
-    req.socket = socket;
-    
-    socket.on('disconnect', function(){
-      console.log(io.engine.clientsCount + " client after disconnecct.");
-    });
-    
+
+io.on('connection', function(socket){
+  console.log(io.engine.clientsCount + " client connected.");
+  global.socket = socket;
+  
+  
+  
+  socket.on('disconnect', function(){
+    console.log(io.engine.clientsCount + " client after disconnecct.");
   });
-  next();
-};
+  
+});
+
 
 
 
@@ -57,10 +63,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 
 var users = require('./routes/users');
-app.use('/users', socketMiddleWare, users);
+app.use('/users', users);
 
 var search = require('./routes/search');
-app.use('/search', socketMiddleWare, search);
+app.use('/search', search);
 
 app.use('/book', book);
 app.use('/api', api);

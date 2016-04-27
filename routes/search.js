@@ -106,7 +106,7 @@ router.get('/', function(req, res, next){
                                 if(err) console.dir(err);
                                 
                                 //console.log(book.image);
-                                req.socket.emit("new book in search", {id : book._id, title: book.title});
+                                socket.emit("new book in search", {id : book._id, title: book.title});
                                 
                             });
                         });

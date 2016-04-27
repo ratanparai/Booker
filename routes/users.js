@@ -330,7 +330,7 @@ router.post('/updatesettings' ,multer({ dest: './uploads/'}).single('upl'), func
         fs.rename(req.file.path, './public/images/profile/' + req.session.userid + '.'+ extension, function(err){
             if (err) console.log(err);
             
-            req.socket.emit('refresh profile page', {url : '/images/profile/' + req.session.userid + '.' + extension});
+            socket.emit('refresh profile page', {url : '/images/profile/' + req.session.userid + '.' + extension});
             
         });
         
