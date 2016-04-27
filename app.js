@@ -27,7 +27,7 @@ var socketMiddleWare = function(req, res, next){
     req.socket = socket;
     
     socket.on('disconnect', function(){
-      console.log(io.engine.clientsCount + " client connected.");
+      console.log(io.engine.clientsCount + " client after disconnecct.");
     });
     
   });

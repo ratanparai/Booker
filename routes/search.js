@@ -98,7 +98,7 @@ router.get('/', function(req, res, next){
                     });
                     
                     newBook.save(function(err, book){
-                        if(err) return console.dir(err);
+                        if(err) return ;
                         
                         // Download image to local directory
                         request(book.image, {encoding : 'binary'}, function(err, res, body){
@@ -120,7 +120,7 @@ router.get('/', function(req, res, next){
                     });
                     
                     newAuthor.save(function(err, author){
-                        if(err) return console.dir(err);
+                        if(err) return ;
                         
                         request(author.image, {encoding : 'binary'}, function(err, res, body){
                             if(err) console.dir(err);
