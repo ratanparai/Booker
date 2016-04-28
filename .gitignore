@@ -33,8 +33,8 @@ node_modules
 .node_repl_history
 
 # remove downloaded images
-public/images/authors
-public/images/books
-public/images/profile
+public/images/authors/*
+public/images/books/*
+public/images/profile/*
 
 !public/images/profile/default.png
