@@ -31,7 +31,10 @@ io.on('connection', function(socket){
   console.log(io.engine.clientsCount + " client connected.");
   global.socket = socket;
   
-  
+  sub.on("message", function(channel, message){
+    console.log("Message "+ message + " on channel " + channel+ " arived");
+    socket.emit('notification', {data: message});
+  });
   
   socket.on('disconnect', function(){
     console.log(io.engine.clientsCount + " client after disconnecct.");
@@ -59,6 +62,17 @@ app.use(session({
     saveUninitialized: true  
 }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// middleware for subscribing to user channels for notification
+// app.use(function (req, res, next) {
+//   console.log("middlware for subscribing...");
+//   if(req.session.followers) {
+//     console.log("start subscribing to " + req.session.followers);
+//     sub.subscribe(req.session.followers);
+//     console.log("subscribe to " + req.session.followers);
+//   }
+//   next();
+// });
 
 app.use('/', routes);
 

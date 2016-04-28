@@ -55,6 +55,10 @@ goodreads.prototype.getBookInfo = function(goodreadId, cb) {
             parser.parseString(body, function(err, result){
                 if (err) return cb(err);
                 
+                console.log(result);
+                console.log("===========================");
+                console.log("===========================");
+                
                 var jsonResult = JSON.stringify(result);
                 return cb(null, jsonResult);
             });

@@ -5,7 +5,7 @@ var User = require('../models/user');
 var Progress = require('../models/progress');
 var Book = require('../models/book');
 
-var _ = require('underscore');
+var underscore = require('underscore');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -17,7 +17,7 @@ router.get('/', function(req, res, next) {
             if (err) return console.dir(err);
             
             
-            var userlist = _.pluck(doc, 'user1');
+            var userlist = underscore.pluck(doc, 'user1');
             console.dir(userlist);
             
             // complex query start :D 
@@ -40,8 +40,8 @@ router.get('/', function(req, res, next) {
                         });
                 });
             
-            res.send("User response");
-            res.end();
+            // res.send("User response");
+            // res.end();
         });
         
         

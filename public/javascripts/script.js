@@ -48,3 +48,7 @@ socket.on('new book in search', function(data){
     $(html).hide().appendTo('.search-result').show('slow');
     //$('.search-result').append(html).show('slow');
 });
+
+socket.on('notification', function(data){
+    console.log(data);
+});

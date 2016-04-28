@@ -3,6 +3,8 @@ var User = require('../models/user');
 var router = express.Router();
 var mime = require('mime');
 
+var _ = require('underscore');
+
 var Friendship = require('../models/friendship');
 
 // multipart form middleware
@@ -117,9 +119,33 @@ router.post('/login', function(req, res, next){
                     req.session.username = username;
                     req.session.fullname = user.name;
                     req.session.userid = user._id;
-                    console.log(req.session);
                     
-                    res.redirect('/'); 
+                    
+                    // subscribe to his friends pubsub channels
+                    Friendship.find({user2: req.session.userid}, function(err, doc){
+                        if (err) return console.dir(err);
+                        
+                        
+                        // req.session.followers = _.pluck(doc, 'user1');
+                        // console.log(req.session);
+                        
+                        /**
+                         * 
+                         */
+                        var userlist = _.pluck(doc, 'user1');
+                        console.dir(userlist);
+                        
+                        if(userlist.length != 0 ) {
+                            sub.subscribe(userlist);
+                        }
+                        
+                        res.redirect('/'); 
+                        
+                    });
+                    
+                    
+                    
+                    
                 } else {
                     res.render('login', {
                         login : true,

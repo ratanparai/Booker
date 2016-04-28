@@ -249,6 +249,7 @@ router.post('/progress', function(req, res, next){
         myPorgress.save(function(err){
             if(err) console.dir(err);
             
+            pub.publish(req.myAuth.userid, myPorgress);
             res.json({message: "Book progress update successful"});
         });
     });
