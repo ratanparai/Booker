@@ -133,12 +133,8 @@ router.post('/login', function(req, res, next){
                          * 
                          */
                         var userlist = _.pluck(doc, 'user1');
+                        req.session.followers = userlist;
                         console.dir(userlist);
-                        
-                        if(userlist.length != 0 ) {
-                            sub.subscribe(userlist);
-                        }
-                        
                         res.redirect('/'); 
                         
                     });

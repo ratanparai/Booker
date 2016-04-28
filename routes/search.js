@@ -27,8 +27,9 @@ router.get('/', function(req, res, next){
         if(err) return console.log(err);
         
         var resultObj = JSON.parse(res);
+        console.dir(resultObj);
         
-        if(typeof resultObj.GoodreadsResponse.search[0].results[0].work != 'undefined') {
+        if(typeof resultObj.GoodreadsResponse != 'undefined') {
             var books = resultObj.GoodreadsResponse.search[0].results[0].work;
         
             // console.log(books[0].best_book[0].id[0]._);
@@ -63,12 +64,14 @@ router.get('/', function(req, res, next){
                     //console.log(res);
                                             
                     var resObj = JSON.parse(res);
+                    console.dir(resObj);
                     
                     console.log(res);
                     console.log("================================");
                     console.log("================================");
                     
-                    if(typeof resObj.GoodreadsResponse.book[0] != 'undefined') {
+                    if(typeof resObj.GoodreadsResponse != 'undefined') {
+                        console.log("it is not undefined")
                         var bookInfo = resObj.GoodreadsResponse.book[0];
                     
                         singleBook.title = resObj.GoodreadsResponse.book[0].title[0];

@@ -4,14 +4,21 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var session = require('express-session');
+
+
+var session = require('express-session')({
+    secret: "my-secret",
+    resave: true,
+    saveUninitialized: true
+});
+
+
 var mongoose = require('mongoose');
 mongoose.connect("mongodb://localhost/Booker")
 
 // redis
 var redis = require('redis');
 global.pub = redis.createClient();
-global.sub = redis.createClient();
 
 var routes = require('./routes/index');
 
@@ -27,24 +34,6 @@ var io = require("socket.io").listen(server);
 server.listen(8056);
 
 
-io.on('connection', function(socket){
-  console.log(io.engine.clientsCount + " client connected.");
-  global.socket = socket;
-  
-  sub.on("message", function(channel, message){
-    console.log("Message "+ message + " on channel " + channel+ " arived");
-    socket.emit('notification', {data: message});
-  });
-  
-  socket.on('disconnect', function(){
-    console.log(io.engine.clientsCount + " client after disconnecct.");
-  });
-  
-});
-
-
-
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -56,12 +45,41 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 // session
-app.use(session({
-    secret : 'this is my secret',
-    resave: true,
-    saveUninitialized: true  
-}));
+app.use(session);
 app.use(express.static(path.join(__dirname, 'public')));
+
+var sharedsession = require("express-socket.io-session");
+
+io.use(sharedsession(session, {
+    autoSave:true
+})); 
+
+io.on('connection', function(socket){
+  console.log(io.engine.clientsCount + " client connected.");
+  global.socket = socket;
+  
+  //subscription
+  var sub = redis.createClient();
+  
+  // search result
+  sub.subscribe('search.'+socket.handshake.session.id);
+  
+  if(socket.handshake.session.followers){
+    console.log("subscribing.. to " + socket.handshake.session.followers);
+    sub.subscribe(socket.handshake.session.followers);
+  }
+  
+  sub.on("message", function(channel, message){
+    console.log("Message "+ message + " on channel " + channel+ " arived");
+    socket.emit('notification', {data: message});
+  });
+  
+  socket.on('disconnect', function(){
+    console.log(io.engine.clientsCount + " client after disconnecct.");
+    sub.quit();
+  });
+  
+});
 
 // middleware for subscribing to user channels for notification
 // app.use(function (req, res, next) {
