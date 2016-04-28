@@ -31,3 +31,10 @@ node_modules
 
 # Optional REPL history
 .node_repl_history
+
+# remove downloaded images
+public/images/authors
+public/images/books
+public/images/profile
+
+!public/images/profile/default.png
