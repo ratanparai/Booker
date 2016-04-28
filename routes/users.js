@@ -318,10 +318,13 @@ router.get('/follow/:userid/:username', function (req, res, next) {
             newFriend.save(function(err){
                 if (err) return console.log(err);
                 
-                res.redirect('/users/view/' + req.params.username);
+                // add new user to session followers list
+                req.session.followers.push(userToFollow);
+                
+                res.redirect('back');
             });
         } else {
-            res.redirect('/users/view/' + req.params.username);
+            res.redirect('back');
         }
     });
     
@@ -332,9 +335,14 @@ router.get('/unfollow/:userid/:username', function (req, res, next) {
     var currentUser = req.params.userid;
     
     Friendship.findOneAndRemove({user1 : currentUser, user2 : req.session.userid}, function(err){
-    if (err) return console.dir(err);
-    
-    res.redirect('/users/view/' + req.params.username);
+        if (err) return console.dir(err);
+        
+        
+        if(req.session.followers.indexOf(currentUser) !== -1 ){
+            req.session.followers.splice(req.session.followers.indexOf(currentUser), 1);
+        }
+        
+        res.redirect('back');
     });
 });
 
