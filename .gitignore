@@ -38,3 +38,7 @@ public/images/books/*
 public/images/profile/*
 
 !public/images/profile/default.png
+
+.vscode/*
+
+typings/*
