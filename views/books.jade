@@ -1,0 +1,19 @@
+extends layout
+
+block content         
+    .container
+        .row.search-result
+            h1 Popular books
+            - var i = 0;
+            each item in books
+                if i === 6
+                    .row 
+                    - i = 0;
+                .col-md-2
+                    a(href='/book/'+ item._id)
+                        img.img-thumbnail(src='/images/books/' + item._id + '.jpg')
+                    .title.network-name #{item.title}
+                    - i++
+
+                    
+        

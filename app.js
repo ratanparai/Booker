@@ -24,6 +24,7 @@ var routes = require('./routes/index');
 
 
 var book = require('./routes/book');
+var books = require('./routes/books');
 var api = require('./routes/api');
 
 var app = express();
@@ -65,21 +66,23 @@ io.on('connection', function(socket){
   sub.subscribe('session.'+socket.handshake.session.id);
   
   if(socket.handshake.session.followers){
-    //console.log("subscribing.. to " + socket.handshake.session.followers);
+    console.log("subscribing.. to " + socket.handshake.session.followers);
     sub.subscribe(socket.handshake.session.followers);
   }
   
   sub.on("message", function(channel, message){
     var msg = JSON.parse(message);
-    //console.dir(msg);
+    console.log("Receiving API content.");
     
     if(typeof msg.search !== 'undefined'){
       //console.log(msg.search);
       socket.emit("new book in search", msg.search);
     } else if (typeof msg.profile_pic_update !== 'undefined') {
         socket.emit('refresh profile page', msg.profile_pic_update);
-    } else {
-      //console.log("Message "+ msg + " on channel " + channel+ " arived");
+    } else if(typeof msg.progress !== 'undefined') {
+        socket.emit('notification', msg.progress);
+    }else {
+      console.log("Message "+ msg + " on channel " + channel+ " arived");
       socket.emit('notification', {data: msg});
     }
     
@@ -113,6 +116,8 @@ var search = require('./routes/search');
 app.use('/search', search);
 
 app.use('/book', book);
+app.use('/books', books);
+
 app.use('/api', api);
 
 // catch 404 and forward to error handler

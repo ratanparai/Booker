@@ -249,7 +249,22 @@ router.post('/progress', function(req, res, next){
         myPorgress.save(function(err){
             if(err) console.dir(err);
             
-            pub.publish(req.myAuth.userid, JSON.stringify(myPorgress));
+            Progress
+                .find({book_id : book_id, user_id : userid})
+                .populate('book_id user_id')
+                .exec(function(err, progResult){
+                    if (err) console.dir(err);
+                    
+                    
+                    
+                    var pubToProg = {
+                        progress : progResult
+                    }
+                    console.dir(progResult);
+                    pub.publish(req.myAuth.userid, JSON.stringify(pubToProg));
+                });
+            
+            
             res.json({message: "Book progress update successful"});
         });
     });

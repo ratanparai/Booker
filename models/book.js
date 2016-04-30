@@ -15,7 +15,9 @@ var bookSchema = new Schema({
    language : String,
    description : String,
    total_rating : Number,
-   total_vote : Number
+   total_vote : Number,
+   total_reading: {type: Number, default: 0},
+   total_read : {type:Number, default: 0}
 });
 
 // the schema is useless untill a model is created 

@@ -53,5 +53,38 @@ socket.on('new book in search', function(data){
 });
 
 socket.on('notification', function(data){
-    console.log(data);
+    console.log("got notification");
+    console.dir(data);
+    var icon = 'http://localhost:3000/images/profile/' + data[0].user_id.profile_picture;
+    var title = data[0].user_id.name;
+    var pro = Math.round(data[0].percentage);
+    var body = data[0].user_id.name + ' is reading ' + data[0].book_id.title + ' : '+ pro + '%';
+    browserNotification(body , icon, title);
 });
+
+function browserNotification(theBody, theIcon, data) {
+    
+    var options = {
+        body : theBody,
+        icon : theIcon
+    }
+    // check if browser supports notifications
+    if(!("Notification" in window)) {
+        alert("This browser does not support desktop notification");
+    }
+    
+    // check whether notificatio permission have already been granted
+    else if(Notification.permission === "granted") {
+        // It then create a notification
+        var notification = new Notification(data, options);
+    }
+    
+    // Otherwise, ask for user permission
+    else if (Notification.permission !== "denied") {
+        Notification.requestPermission(function (permission) {
+            if(permission === "granted") {
+                var notification = new Notification(data,options);
+            }
+        });
+    }
+}
