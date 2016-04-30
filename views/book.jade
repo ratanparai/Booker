@@ -4,7 +4,7 @@ block content
     .container
         .row
             .col-md-3
-                img.single-book-image(src='/images/books/' + bookinfo._id + '.jpg')
+                img.single-book-image.thumbnail(src='/images/books/' + bookinfo._id + '.jpg')
             
             .col-md-9
                 h2.title #{bookinfo.title}
@@ -14,25 +14,67 @@ block content
     hr
     
     .container
-        .row
-            .col-md-12
-                .panel.panel-primary
-                    .panel-heading Currently reading
-                    .panel-body 
-                        .row
-                            each progress in progresses
-                                - number = Math.round(progress.percentage)
-                                .col-md-2
-                                    a(href="/users/view/" + progress.user_id.username)
-                                        img.img-circle(src='/images/profile/' + progress.user_id.profile_picture)
-                                        p.center #{progress.user_id.name}
-                                    .progress
-                                        .progress-bar(role="progressbar", aria-valuenow=number  aria-valuemin="0", aria-valuemax="100", style="width:#{number}%") #{number}%
+        ul.nav.nav-tabs
+            li.active
+                a(data-toggle="tab", href="#progress-tab") Progress
+            li
+                a(data-toggle="tab", href="#read-tab") Read
+        
+        .tab-content
+            #progress-tab.tab-pane.fade.in.active
+                .container
+                    .row
+                        .col-md-12
+                            .panel-body 
+                                .row
+                                    each progress in progresses
+                                        - number = Math.round(progress.percentage)
+                                        .col-md-2
+                                            a(href="/users/view/" + progress.user_id.username)
+                                                img.img-circle(src='/images/profile/' + progress.user_id.profile_picture)
+                                                p.center #{progress.user_id.name}
+                                            .progress
+                                                .progress-bar(role="progressbar", aria-valuenow=number  aria-valuemin="0", aria-valuemax="100", style="width:#{number}%") #{number}%
+
+            #read-tab.tab-pane.fade
+                .container
+                    .row
+                        .col-md-12
+                            .panel-body 
+                                if reads
+                                    .row
+                                        each read in reads
+                                            .col-md-2
+                                                a(href="/users/view/" + read.user_id.username)
+                                                    img.img-circle(src='/images/profile/' + read.user_id.profile_picture)
+                                                    p.center #{read.user_id.name}
+                                                
+
+    
+    // if progresses.length !== 0
+    //     .container
+    //         .row
+    //             .col-md-12
+    //                 .panel.panel-primary
+    //                     .panel-heading Currently reading
+    //                     .panel-body 
+    //                         .row
+    //                             each progress in progresses
+    //                                 - number = Math.round(progress.percentage)
+    //                                 .col-md-2
+    //                                     a(href="/users/view/" + progress.user_id.username)
+    //                                         img.img-circle(src='/images/profile/' + progress.user_id.profile_picture)
+    //                                         p.center #{progress.user_id.name}
+    //                                     .progress
+    //                                         .progress-bar(role="progressbar", aria-valuenow=number  aria-valuemin="0", aria-valuemax="100", style="width:#{number}%") #{number}%
     
     hr
     .container
         .row
             .col-md-12
+            
+                input#rating.rating.rating-loading(type="text", data-size="lg" )
+            
                 form(action='/book/comment', method='post')
                     h4 Review the book
                     .form-group
@@ -41,6 +83,7 @@ block content
                     .form-group
                         button.btn.btn-default Submit
                         
+    
     hr 
     if comments.length !== 0
         .container
@@ -55,4 +98,8 @@ block content
                                 br 
                                 i ( #{comment.comment_on})
                             .panel-body #{comment.comment}
+                            
+
+
+    
                     

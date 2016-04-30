@@ -46,12 +46,12 @@ router.get('/', function(req, res, next) {
         
         
         
-        console.log('user logged in ' + req.session.username);
+        //console.log('user logged in ' + req.session.username);
         loginInfo.loggedin = true;
         loginInfo.username = req.session.username;
     } else {
-        console.log('no user is logged in');
-        console.log(loginInfo);
+        //console.log('no user is logged in');
+        //console.log(loginInfo);
             
         res.render('index', { 
             title: 'Booker',

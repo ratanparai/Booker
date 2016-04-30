@@ -16,18 +16,18 @@ router.get('/', function(req, res, next){
     var loginInfo = {};
 
     if(req.session.username) {
-        console.log('user logged in ' + req.session.username);
+        //console.log('user logged in ' + req.session.username);
         loginInfo.loggedin = true;
         loginInfo.username = req.session.username;
     } else {
-        console.log('no user is logged in');
+        //console.log('no user is logged in');
     }
     
     goodreads.searchBook(req.query.query, function (err, res) {
         if(err) return console.log(err);
         
         var resultObj = JSON.parse(res);
-        console.dir(resultObj);
+        //console.dir(resultObj);
         
         if(typeof resultObj.GoodreadsResponse != 'undefined') {
             var books = resultObj.GoodreadsResponse.search[0].results[0].work;
@@ -64,14 +64,14 @@ router.get('/', function(req, res, next){
                     //console.log(res);
                                             
                     var resObj = JSON.parse(res);
-                    console.dir(resObj);
+                    //console.dir(resObj);
                     
-                    console.log(res);
-                    console.log("================================");
-                    console.log("================================");
+                    //console.log(res);
+                    //console.log("================================");
+                    //console.log("================================");
                     
                     if(typeof resObj.GoodreadsResponse != 'undefined') {
-                        console.log("it is not undefined")
+                        //console.log("it is not undefined")
                         var bookInfo = resObj.GoodreadsResponse.book[0];
                     
                         singleBook.title = resObj.GoodreadsResponse.book[0].title[0];
@@ -86,7 +86,8 @@ router.get('/', function(req, res, next){
                         singleBook.publicationYear = bookInfo.publication_year[0];
                         singleBook.language = bookInfo.language_code[0];
                         
-                        console.log('Author image is ' + singleBook.authorImage)
+                        
+                        //console.log('Author image is ' + singleBook.authorImage)
                         
                         // if there is no isbn number then ignore the book      
                         // FOR NOW
@@ -101,6 +102,7 @@ router.get('/', function(req, res, next){
                                     isbn : singleBook.isbn,
                                     isbn13 : singleBook.isbn13,
                                     author_id : singleBook.authorId,
+                                    author_name : singleBook.authorName,
                                     image : singleBook.bookImage,
                                     publication_date : singleBook.publicationYear,
                                     language : singleBook.language,
@@ -116,7 +118,14 @@ router.get('/', function(req, res, next){
                                         if(err) console.dir(err);
                                         
                                         //console.log(book.image);
-                                        socket.emit("new book in search", {id : book._id, title: book.title});
+                                        // socket.emit("new book in search", {id : book._id, title: book.title});
+                                        var resToPub = {
+                                            search : {
+                                                id : book._id,
+                                                title: book.title
+                                            }
+                                        }
+                                        pub.publish('search.'+req.session.id , JSON.stringify(resToPub));
                                         
                                     });
                                 });

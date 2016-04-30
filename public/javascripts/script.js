@@ -24,6 +24,9 @@ $('#profile-update-form').submit(function(event){
     
 });
 
+$("#rating").rating();
+
+
 // SOCKET.IO 
 var socket = io.connect('http://localhost:8056');
 

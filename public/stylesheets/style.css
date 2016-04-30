@@ -97,3 +97,32 @@ img {
     text-align: center;
 }
 
+.progress-book-title h3 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.progress-book-author {
+    margin-top: 0px;
+    font-style: italic;
+}
+
+.progress-book-progress {
+    padding-top: 0px;
+}
+
+.progress-book-description {
+    height: 60px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.progress-book-show-more {
+    text-align: right;
+}
+
+.center{
+    text-align: center;
+}
+
+

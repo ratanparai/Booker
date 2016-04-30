@@ -6,6 +6,7 @@ var mime = require('mime');
 var _ = require('underscore');
 
 var Friendship = require('../models/friendship');
+var Progress = require('../models/progress');
 
 // multipart form middleware
 var multer = require('multer');
@@ -261,7 +262,31 @@ router.get('/view/:username/:action?', function(req, res, next){
                     
                     
                 } else if(action == 'progress') {
-                    // show progress
+                    
+                    console.log("Progress get " + userResult._id);
+                    
+                    Progress
+                        .find({user_id : userResult._id})
+                        .populate('book_id')
+                        .exec(function(err, result){
+                            if (err) return console.log(err);
+                        
+                            console.log(result);
+                            
+                            res.render('profile', {
+                                title : 'profile : Progress',
+                                session: req.session,
+                                loginInfo : loginInfo,
+                                user : userResult,
+                                follower : friendsWith.length,
+                                isFriend : isFriend,
+                                action : action,
+                                progresses: result
+                        });
+                        
+                    });
+                    
+                    
                 } else {
                     res.render('profile', {
                         title : 'profile',

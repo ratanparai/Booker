@@ -1,0 +1,27 @@
+.container
+
+    each book in progresses
+        - number = Math.round(book.percentage)
+        .panel.panel-default
+            .panel-body
+                .row.progress-book
+                    .col-md-2
+                        img.thumbnail(src="/images/books/#{book.book_id._id}.jpg")
+                    .col-md-10
+                        .row.progress-book-title 
+                            h3
+                                a(href="/book/#{book.book_id._id}") #{book.book_id.title}
+                        .row.progress-book-author 
+                            h5
+                                a(href="#") #{book.book_id.author_name}
+                        .row.progress-book-progress 
+                            .progress
+                            
+                                .progress-bar(role="progressbar", aria-valuenow=number,  aria-valuemin="0", aria-valuemax="100", style="width:#{number}%;") #{number}%
+                                
+                        .row.progress-book-description
+                            p #{book.book_id.description}
+                            
+                        .row.progress-book-show-more
+                            a(href="/book/#{book.book_id._id}") More
+                    

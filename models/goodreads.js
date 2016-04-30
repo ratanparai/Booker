@@ -55,9 +55,9 @@ goodreads.prototype.getBookInfo = function(goodreadId, cb) {
             parser.parseString(body, function(err, result){
                 if (err) return cb(err);
                 
-                console.log(result);
-                console.log("===========================");
-                console.log("===========================");
+                //console.log(result);
+                //console.log("===========================");
+                //console.log("===========================");
                 
                 var jsonResult = JSON.stringify(result);
                 return cb(null, jsonResult);
@@ -91,7 +91,7 @@ goodreads.prototype.findBook = function(title, author, cb) {
         requestUrl += requestUrl + '&author=' + encodeURIComponent(author);
     }
     
-    console.log(requestUrl);
+    //console.log(requestUrl);
     
     http.get(requestUrl, function(res){
         var body = '';
@@ -162,6 +162,7 @@ goodreads.prototype.saveSingleBookInfo = function(jsonResponse, cb) {
                     isbn : singleBook.isbn,
                     isbn13 : singleBook.isbn13,
                     author_id : singleBook.authorId,
+                    author_name : singleBook.authorName,
                     image : singleBook.bookImage,
                     publication_date : singleBook.publicationYear,
                     language : singleBook.language,

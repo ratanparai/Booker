@@ -65,13 +65,23 @@ io.on('connection', function(socket){
   sub.subscribe('search.'+socket.handshake.session.id);
   
   if(socket.handshake.session.followers){
-    console.log("subscribing.. to " + socket.handshake.session.followers);
+    //console.log("subscribing.. to " + socket.handshake.session.followers);
     sub.subscribe(socket.handshake.session.followers);
   }
   
   sub.on("message", function(channel, message){
-    console.log("Message "+ message + " on channel " + channel+ " arived");
-    socket.emit('notification', {data: message});
+    var msg = JSON.parse(message);
+    //console.dir(msg);
+    
+    if(typeof msg.search !== 'undefined'){
+      //console.log(msg.search);
+      socket.emit("new book in search", msg.search);
+    } else {
+      //console.log("Message "+ msg + " on channel " + channel+ " arived");
+      socket.emit('notification', {data: msg});
+    }
+    
+    
   });
   
   socket.on('disconnect', function(){

@@ -9,6 +9,7 @@ var bookSchema = new Schema({
    isbn : String,
    isbn13 : String,
    author_id : Number, 
+   author_name : String,
    image : String,
    publication_date : Number,
    language : String,
