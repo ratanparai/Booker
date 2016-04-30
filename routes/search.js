@@ -125,7 +125,7 @@ router.get('/', function(req, res, next){
                                                 title: book.title
                                             }
                                         }
-                                        pub.publish('search.'+req.session.id , JSON.stringify(resToPub));
+                                        pub.publish('session.'+req.session.id , JSON.stringify(resToPub));
                                         
                                     });
                                 });
@@ -198,11 +198,11 @@ router.get('/', function(req, res, next){
                 var loginInfo = {};
 
                 if(req.session.username) {
-                    console.log('user logged in ' + req.session.username);
+                    //console.log('user logged in ' + req.session.username);
                     loginInfo.loggedin = true;
                     loginInfo.username = req.session.username;
                 } else {
-                    console.log('no user is logged in');
+                    //console.log('no user is logged in');
                 }
                 
                 

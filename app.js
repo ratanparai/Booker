@@ -62,7 +62,7 @@ io.on('connection', function(socket){
   var sub = redis.createClient();
   
   // search result
-  sub.subscribe('search.'+socket.handshake.session.id);
+  sub.subscribe('session.'+socket.handshake.session.id);
   
   if(socket.handshake.session.followers){
     //console.log("subscribing.. to " + socket.handshake.session.followers);
@@ -76,6 +76,8 @@ io.on('connection', function(socket){
     if(typeof msg.search !== 'undefined'){
       //console.log(msg.search);
       socket.emit("new book in search", msg.search);
+    } else if (typeof msg.profile_pic_update !== 'undefined') {
+        socket.emit('refresh profile page', msg.profile_pic_update);
     } else {
       //console.log("Message "+ msg + " on channel " + channel+ " arived");
       socket.emit('notification', {data: msg});
