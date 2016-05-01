@@ -7,6 +7,8 @@ var Author = require('../models/author')
 var Comment = require('../models/comment');
 var Progress = require('../models/progress');
 
+var moment = require('moment');
+
 
 /* GET home page. */
 router.get('/:id', function(req, res, next){
@@ -33,38 +35,39 @@ router.get('/:id', function(req, res, next){
                 
                 
                 // search for comments
-                Comment.find({book_id : book_id}, function(err, comment){
-                    if(err) return console.dir(err);
-                   
+                Comment
+                    .find({book_id : book_id})
+                    .populate('user_id')
+                    .exec(function(err, comment){
+                        if(err) return console.dir(err);
                     
-                    // Friendship
-                    //     .find({user1 : userResult._id})
-                    //     .populate('user2')
-                    //     .exec(function(err, followers){
-                    //         if (err) return console.log(err);
-                    
-                    Progress
-                        .find({book_id:book._id})
-                        .populate('user_id')
-                        .exec(function(err, progresses){
-                            if (err) return  console.dir(err);
-                            
-                            
-                            //console.log(progresses.user_id.name);
-                            
-                            res.render('book', {
-                                title : book.title,
-                                bookinfo: book,
-                                author : author,
-                                loginInfo : loginInfo,
-                                comments : comment,
-                                progresses : progresses
+                        
+                        // Friendship
+                        //     .find({user1 : userResult._id})
+                        //     .populate('user2')
+                        //     .exec(function(err, followers){
+                        //         if (err) return console.log(err);
+                        
+                        Progress
+                            .find({book_id:book._id})
+                            .populate('user_id')
+                            .exec(function(err, progresses){
+                                if (err) return  console.dir(err);
+                                
+                                
+                                //console.log(progresses.user_id.name);
+                                
+                                res.render('book', {
+                                    title : book.title,
+                                    bookinfo: book,
+                                    author : author,
+                                    loginInfo : loginInfo,
+                                    comments : comment,
+                                    progresses : progresses,
+                                    moment : moment
+                                });
                             });
-                        });
-                            
-                    
-                    
-                    
+
                 });
                 
                 
@@ -102,7 +105,7 @@ router.post('/comment', function(req, res, next){
         newComment.save(function(err){
             if (err) return console.log(err);
             
-            res.redirect('/book/' + book_id);
+            res.redirect('back');
         });
         
         

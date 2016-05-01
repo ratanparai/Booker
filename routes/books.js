@@ -34,21 +34,32 @@ router.get('/', function(req, res, next){
              var sortedResult = sortedResult.reverse(sortedResult);
              console.log(sortedResult);
              
-             Book
-                .find()
-                .where('_id').in(sortedResult)
-                .exec(function(err, bookRes){
-                    if(err) return res.json({error: err});
+             Book.populate(sortedResult, {path : '_id'}, (err, doc) => {
+                    if (err) return console.dir(err);
                     
-                    
-                    
+                    console.dir(doc);
                     res.render('books',{
-                        books : bookRes,
+                        books : doc,
                         title : 'Popular books',
                         loginInfo : loginInfo
                     });
-                    
                 });
+             
+            //  Book
+            //     .find()
+            //     .where('_id').in(sortedResult)
+            //     .exec(function(err, bookRes){
+            //         if(err) return res.json({error: err});
+                    
+                    
+                    
+            //         res.render('books',{
+            //             books : bookRes,
+            //             title : 'Popular books',
+            //             loginInfo : loginInfo
+            //         });
+                    
+            //     });
              
              //res.json(sortedResult);
         })

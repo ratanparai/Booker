@@ -94,9 +94,14 @@ block content
                     each comment in comments
                         .panel.panel-default
                             .panel-heading 
-                                b #{comment.user_fullname} 
-                                br 
-                                i ( #{comment.comment_on})
+                                .row
+                                    .col-md-1
+                                        img.img-circle.img-small(src="/images/profile/#{comment.user_id.profile_picture}")
+                                    .col-md-11
+                                        b #{comment.user_id.name} 
+                                        br 
+                                        i #{moment(comment.comment_on).calendar()}
+                                        //i ( #{comment.comment_on})
                             .panel-body #{comment.comment}
                             
 

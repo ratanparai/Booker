@@ -268,6 +268,7 @@ router.get('/view/:username/:action?', function(req, res, next){
                     Progress
                         .find({user_id : userResult._id})
                         .populate('book_id')
+                        .sort('-last_update')
                         .exec(function(err, result){
                             if (err) return console.log(err);
                         

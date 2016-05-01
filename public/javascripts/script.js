@@ -55,10 +55,10 @@ socket.on('new book in search', function(data){
 socket.on('notification', function(data){
     console.log("got notification");
     console.dir(data);
-    var icon = 'http://localhost:3000/images/profile/' + data[0].user_id.profile_picture;
-    var title = data[0].user_id.name;
-    var pro = Math.round(data[0].percentage);
-    var body = data[0].user_id.name + ' is reading ' + data[0].book_id.title + ' : '+ pro + '%';
+    var icon = 'http://localhost:3000/images/profile/' + data.user_id.profile_picture;
+    var title = data.user_id.name;
+    var pro = Math.round(data.percentage);
+    var body = data.user_id.name + ' start reading ' + data.book_id.title + ' : '+ pro + '%';
     browserNotification(body , icon, title);
 });
 

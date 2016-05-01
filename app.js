@@ -5,8 +5,20 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// redis
+var redis = require('redis');
+global.pub = redis.createClient();
+var rClinet = redis.createClient();
 
-var session = require('express-session')({
+
+var ExpressSession = require('express-session');
+var connectRedis = require('connect-redis');
+var RedisStore = connectRedis(ExpressSession);
+var rClient = redis.createClient();
+var sessionStore = new RedisStore({client: rClient});
+
+var session = ExpressSession({
+    store: sessionStore,
     secret: "my-secret",
     resave: true,
     saveUninitialized: true
@@ -16,9 +28,7 @@ var session = require('express-session')({
 var mongoose = require('mongoose');
 mongoose.connect("mongodb://localhost/Booker")
 
-// redis
-var redis = require('redis');
-global.pub = redis.createClient();
+
 
 var routes = require('./routes/index');
 
@@ -79,8 +89,8 @@ io.on('connection', function(socket){
       socket.emit("new book in search", msg.search);
     } else if (typeof msg.profile_pic_update !== 'undefined') {
         socket.emit('refresh profile page', msg.profile_pic_update);
-    } else if(typeof msg.progress !== 'undefined') {
-        socket.emit('notification', msg.progress);
+    } else if(typeof msg.startReading !== 'undefined') {
+        socket.emit('notification', msg.startReading);
     }else {
       console.log("Message "+ msg + " on channel " + channel+ " arived");
       socket.emit('notification', {data: msg});
@@ -163,6 +173,6 @@ app.use(function(err, req, res, next) {
 
 
 
-console.log('server running at port 3000');
+console.log('server running at port 3000!');
 
 module.exports = app;

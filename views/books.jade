@@ -10,9 +10,10 @@ block content
                     .row 
                     - i = 0;
                 .col-md-2
-                    a(href='/book/'+ item._id)
-                        img.img-thumbnail(src='/images/books/' + item._id + '.jpg')
-                    .title.network-name #{item.title}
+                    a(href='/book/'+ item._id._id)
+                        img.img-thumbnail(src='/images/books/' + item._id._id + '.jpg')
+                    .currently-reading #{item.count} People reading
+                    .title.network-name.popular-book-title #{item._id.title}
                     - i++
 
                     

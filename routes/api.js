@@ -233,41 +233,115 @@ router.post('/progress', function(req, res, next){
     var progress = req.body.progress;
     var userid = req.myAuth.userid;
     
-    // find and delete any previous progress
     
-    Progress.remove({book_id: book_id, user_id : userid}, function(err){
+    // check if this is the first time user updating the book progress
+    // if this is the first time then he/she just started reading the book
+    // so publish the started reading message (pubsub) 
+    
+    Progress.findOne({book_id:book_id, user_id : userid}, (err, progBookRes) => {
         if(err) console.dir(err);
         
-        // save progress
-        var myPorgress = new Progress({
-            book_id : book_id,
-            user_id : userid,
-            percentage : progress,
-            last_update : new Date()
-        });
+        if(progBookRes) {
+            // user is updating his reading status only 
+            // So update the previous entry and publish update (pubsub)
+            
+            var lastRead = progBookRes.last_update;
+            
+            progBookRes.percentage = progress;
+            progBookRes.last_update = new Date();
+            
+            progBookRes.save((err, doc) =>{
+                if (err) console.dir(err);
+                
+                
+                //console.dir(doc);
+                res.json({message: "Book progress update successful"});
+                
+                var opts = [
+                    {path: 'book_id', model:'Book'},
+                    {path:'user_id', model:'User'}
+                ]
+                
+                Progress
+                    .populate(doc, opts, (err, progResDoc) => {
+                        if (err) console.dir(err);
+                        
+                        var tLastUpdate = new Date(lastRead).getTime();
+                        var tNewUpdate = new Date(progResDoc.last_update).getTime();
+                        
+                        var thirtyMin = 30*60*1000;
+                        
+                        if((tNewUpdate-tLastUpdate) > thirtyMin) {
+                            // send notification as starting reading old reading book
+                            
+                            console.log("Notify as new starting reading....");
+                            
+                            var pubToProg = {
+                                startReading : progResDoc
+                            }
+                            
+                            pub.publish(req.myAuth.userid, JSON.stringify(pubToProg));
+                            
+                        }
+                        
+                        console.log('tLastUpdate: ' + tLastUpdate + ' tNewUpdate: ' + tNewUpdate);
+                        
+                        
+                        console.dir(JSON.stringify(progResDoc));
+                        //res.json({message: "Book progress update successful"});
+                    } )
+                    
+                
+                
+            });
+            
+        } else {
+            // if this is first time add progress and send pubsub
+            // as start reading new book
+            var myProgress = new Progress({
+                book_id : book_id,
+                user_id : userid,
+                percentage: progress,
+                last_update : new Date()
+            });
+            
+            myProgress.save((err, doc) => {
+                if (err) console.dir(err);
+                    
+                var opts = [
+                    {path: 'book_id', model:'Book'},
+                    {path:'user_id', model:'User'}
+                ]
+                
+                Progress
+                    .populate(doc, opts, (err, progResult) => {
+                        if (err) console.dir(err);
+                        
+                        var pubToProg = {
+                            startReading : progResult
+                        }
+                        // console.dir(progResult);
+                        pub.publish(req.myAuth.userid, JSON.stringify(pubToProg));
+                    } )
+                
+                // Progress
+                //     .find({book_id : book_id, user_id : userid})
+                //     .populate('book_id user_id')
+                //     .exec(function(err, progResult){
+                //         if (err) console.dir(err);
+
+                        
+                        
+                //     });
+                
+                    
+                res.json({message: "Book progress update successful"});
+                
+            })
+        }
         
-        myPorgress.save(function(err){
-            if(err) console.dir(err);
-            
-            Progress
-                .find({book_id : book_id, user_id : userid})
-                .populate('book_id user_id')
-                .exec(function(err, progResult){
-                    if (err) console.dir(err);
-                    
-                    
-                    
-                    var pubToProg = {
-                        progress : progResult
-                    }
-                    console.dir(progResult);
-                    pub.publish(req.myAuth.userid, JSON.stringify(pubToProg));
-                });
-            
-            
-            res.json({message: "Book progress update successful"});
-        });
     });
+    
 });
 
 
