@@ -193,7 +193,9 @@ router.get('/view/:username/:action?', function(req, res, next){
     User.findOne({username : currentUser}, function(err, userResult){
         if( err) return console.dir(err);
         
-        
+        if(!userResult) {
+            return next();
+        }
         
         // get follower count
         Friendship.find({user1: userResult._id}, function(err, friendsWith) {
