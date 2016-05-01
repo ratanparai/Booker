@@ -1,0 +1,27 @@
+extends layout
+
+block content
+    .container
+        .row
+            .col-md-3
+                img.single-book-image.thumbnail(src='/images/authors/' + author._id + '.jpg')
+            
+            .col-md-9
+                h2.title #{author.name}
+                .book-description !{author.description}
+    hr
+    
+    .container
+        .row.author-books
+            h1 Books
+            - var i = 0;
+            each item in books
+                if i === 6
+                    .row 
+                    - i = 0;
+                .col-md-2
+                    a(href='/book/'+ item._id)
+                        img.img-thumbnail(src='/images/books/' + item._id + '.jpg')
+                    .title.network-name #{item.title}
+                    - i++
+    

@@ -36,6 +36,7 @@ var routes = require('./routes/index');
 var book = require('./routes/book');
 var books = require('./routes/books');
 var api = require('./routes/api');
+var author = require('./routes/author');
 
 var app = express();
 
@@ -126,6 +127,8 @@ var search = require('./routes/search');
 app.use('/search', search);
 
 app.use('/book', book);
+app.use('/author', author);
+
 app.use('/books', books);
 
 app.use('/api', api);

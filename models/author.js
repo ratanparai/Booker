@@ -6,7 +6,8 @@ var Schema = mongoose.Schema;
 var authorSchema = new Schema({
    goodreads_id : {type: Number, unique : true},
    name : String,
-   image : String
+   image : String,
+   description: String
 });
 
 // the schema is useless untill a model is created 

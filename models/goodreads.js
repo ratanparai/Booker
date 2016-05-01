@@ -253,6 +253,31 @@ goodreads.prototype.addBookUsingGoodreadsId = function(goodreads_id, cb){
 };
 
 
+goodreads.prototype.getAuthorInfo = function(author_goodreads_id, cb) {
+    // author/show/2448?format=xml&key=
+    var requestUrl = this.url + 'author/show/'+author_goodreads_id+'?format=xml&key='+this.key;
+    console.log("Requesting URL : " + requestUrl);
+    http.get(requestUrl, (xmlRes) => {
+        var body = '';
+        
+        xmlRes.on('data', (chuck) => {
+            body += chuck;
+        })
+        
+        xmlRes.on('end', ()=> {
+            parser.parseString(body, (err, result) => {
+                if(err) return cb(err);
+                
+                var jsonResult = JSON.stringify(result);
+                
+                return cb(null, jsonResult);
+                
+            })
+        })
+    })
+    
+}
+
 // take a book object with all information and update local database as needed
 goodreads.prototype.updateLocal = function(book, cb) {
     // check if the book is already in local database
