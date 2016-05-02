@@ -76,7 +76,7 @@ io.on('connection', function(socket){
   // search result
   sub.subscribe('session.'+socket.handshake.session.id);
   
-  if(socket.handshake.session.followers){
+  if(socket.handshake.session.followers && socket.handshake.session.followers.length !== 0){
     console.log("subscribing.. to " + socket.handshake.session.followers);
     sub.subscribe(socket.handshake.session.followers);
   }

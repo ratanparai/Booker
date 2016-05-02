@@ -53,7 +53,7 @@ socket.on('new book in search', function(data){
     }
     
     html += '<div class="col-md-2" style="display: none;"><a href="/book/' + data.id + '">';
-    html += '<img src="/images/books/'+ data.id + '.jpg" class="thumbnail"></a>';
+    html += '<img src="/images/books/'+ data.id + '.jpg" class="img-thumbnail"></a>';
     html += '<div class="title network-name">' + data.title + '</div></div>';
     
     $(html).hide().appendTo('.search-result').show('slow');
