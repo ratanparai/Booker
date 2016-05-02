@@ -44,8 +44,16 @@ socket.on('new book in search', function(data){
     // add new book to the search result page.
     console.log(data);
     
-    html = '<div class="col-md-2" style="display: none;"><a href="/book/' + data.id + '">';
-    html += '<img src="/images/books/'+ data.id + '.jpg" class=img-thumbnail"></a>';
+    var numberOfBooks = $('div.search-result div.col-md-2').length;
+    
+    if (numberOfBooks % 6 == 0 ) {
+        html = '<div class="clearfix" visible-xs-block></div>';
+    } else {
+        html = '';
+    }
+    
+    html += '<div class="col-md-2" style="display: none;"><a href="/book/' + data.id + '">';
+    html += '<img src="/images/books/'+ data.id + '.jpg" class="thumbnail"></a>';
     html += '<div class="title network-name">' + data.title + '</div></div>';
     
     $(html).hide().appendTo('.search-result').show('slow');

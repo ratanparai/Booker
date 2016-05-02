@@ -6,6 +6,14 @@ html
     link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/bootstrap-theme.min.css')
     link(ref="stylesheet", href="/stylesheets/star-rating.min.css", media="all")
+    
+    // scripts
+    script(src="/javascripts/jquery-1.12.2.min.js")
+    script(src="/javascripts/bootstrap.min.js")
+    script(src="/javascripts/bootstrap-rating-input.min.js")
+    script(src="/socket.io/socket.io.js")
+    script(src="/javascripts/script.js")
+    
     include ./mixin.jade
   body
     
@@ -43,10 +51,5 @@ html
 
     block content
             
-    // scripts
-    script(src="/javascripts/jquery-1.12.2.min.js")
-    script(src="/javascripts/bootstrap.min.js")
-    script(src="/socket.io/socket.io.js")
-    script(src="/javascripts/bootstrap-rating-input.min.js")
-    script(src="/javascripts/script.js")
+    
     

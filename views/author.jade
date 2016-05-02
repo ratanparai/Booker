@@ -5,6 +5,7 @@ block content
         .row
             .col-md-3
                 img.single-book-image.thumbnail(src='/images/authors/' + author._id + '.jpg')
+                input(type="hidden", id="author_id" value="#{author._id}")
             
             .col-md-9
                 h2.title #{author.name}
@@ -17,11 +18,34 @@ block content
             - var i = 0;
             each item in books
                 if i === 6
-                    .row 
+                    .clearfix(visible-xs-block) 
                     - i = 0;
                 .col-md-2
                     a(href='/book/'+ item._id)
                         img.img-thumbnail(src='/images/books/' + item._id + '.jpg')
                     .title.network-name #{item.title}
                     - i++
-    
+                    
+    script.
+        var author_id = $('#author_id').val();
+        socket.emit("author profile register", author_id);
+        
+        socket.on("author profile new book", (data) => {
+            console.log(data);
+            
+            var numberOfBooks = $('div.author-books div.col-md-2').length;
+            console.log(numberOfBooks);
+            
+            if (numberOfBooks % 6 == 0 ) {
+                html = '<div class="clearfix" visible-xs-block></div>';
+            } else {
+                html = '';
+            }
+            
+            html += '<div class="col-md-2" style="display: none;"><a href="/book/' + data.id + '">';
+            html += '<img src="/images/books/'+ data.id + '.jpg" class="thumbnail"></a>';
+            html += '<div class="title network-name">' + data.title + '</div></div>';
+            
+            $(html).hide().appendTo('.author-books').show('slow');
+        });
+        

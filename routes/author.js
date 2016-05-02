@@ -5,9 +5,103 @@ var Author = require('../models/author');
 var Book = require('../models/book');
 var Goodreads = require('../models/goodreads');
 
-var addMissingBooks = function(book) {
+var request = require('request');
+var fs = require('fs');
+
+var addMissingBooks = function(books, req, author_id) {
     // save book info and send push update
+    console.log(books[0]);
     
+    var step = function(x){
+        if (x < books.length) {
+            
+            var thisBook = books[x];
+            
+            var goodreads_id = thisBook.id[0]._;
+        
+            var imageUrl = thisBook.image_url[0];
+            
+            console.log(imageUrl);
+            
+            var makeItLargeLocation = imageUrl.indexOf("m/", 30);
+            if(makeItLargeLocation === -1) {
+                var newImage = imageUrl;
+            } else {
+                var newImage = imageUrl.substr(0, makeItLargeLocation) + 'l' + imageUrl.substr(makeItLargeLocation+1);
+            }
+            
+            
+            console.log(newImage);
+            
+            Book.findOne({goodreads_id : goodreads_id}, (err, docBook) => {
+                if (err) return step(x+1);
+                
+                if (!docBook) {
+                    
+                    console.log("Book is not in database : " + thisBook.title[0]);
+                    console.dir(thisBook.isbn[0]);
+                    console.dir(thisBook.isbn13[0]);
+                    
+                    if(typeof thisBook.isbn[0].$ !== 'undefined') {
+                        var isbn = '';
+                    }
+                    
+                    if(typeof thisBook.isbn13[0].$ !== 'undefined') {
+                        var isbn13 = '';
+                    }
+                    
+                    
+                    var saveBook = new Book({
+                        title : thisBook.title[0],
+                        goodreads_id : goodreads_id ,
+                        isbn : isbn,
+                        isbn13 : isbn13,
+                        author_id : thisBook.authors[0].author[0].id[0], 
+                        author_name : thisBook.authors[0].author[0].name[0],
+                        image : newImage,
+                        publication_date :thisBook.publication_year[0],
+                        description : thisBook.description[0]
+                    });
+                    
+                    saveBook.save((err, book) => {
+                       if (err) return step(x+1);
+                       
+                       // Download image to local directory
+                       request(book.image, {encoding : 'binary'}, function(err, res, body){
+                           fs.writeFile('./public/images/books/' + book._id + '.jpg', body, 'binary', function(err){
+                               if(err) console.dir(err);
+                               
+                               
+                               //console.log(book.image);
+                               // socket.emit("new book in search", {id : book._id, title: book.title});
+                               var resToPub = {
+                                   authorProfile : {
+                                       id : book._id,
+                                       title: book.title
+                                   }
+                               }
+                               pub.publish('author.' + author_id , JSON.stringify(resToPub));
+                               
+                               step(x+1);
+                               
+                           });
+                       });
+                       
+                        
+                    });
+                    
+                    // return step(x+1);
+                    
+                    
+                } else {
+                    return step(x+1);
+                }
+            });
+            
+        }
+    }
+    
+    step(0);
 }
 
 router.get('/:author_id', (req, res, next) => {
@@ -67,9 +161,15 @@ router.get('/:author_id', (req, res, next) => {
                 })
                 
                 // res.send(JSON.stringify(authorInfo.about[0]));
+                setTimeout(function(){
+                    addMissingBooks(authorInfo.books[0].book, req, authorId);
+                }, 3000);
+                
                 
             });
         }
+        
+        
     });
     
     

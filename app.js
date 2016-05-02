@@ -81,6 +81,12 @@ io.on('connection', function(socket){
     sub.subscribe(socket.handshake.session.followers);
   }
   
+  socket.on("author profile register", (msg) => {
+    console.log("Registering to author profile page");
+    sub.subscribe("author."+msg);
+  });
+  
+  
   sub.on("message", function(channel, message){
     var msg = JSON.parse(message);
     console.log("Receiving API content.");
@@ -92,6 +98,8 @@ io.on('connection', function(socket){
         socket.emit('refresh profile page', msg.profile_pic_update);
     } else if(typeof msg.startReading !== 'undefined') {
         socket.emit('notification', msg.startReading);
+    } else if (typeof msg.authorProfile !== 'undefined') {
+        socket.emit("author profile new book", msg.authorProfile);
     }else {
       console.log("Message "+ msg + " on channel " + channel+ " arived");
       socket.emit('notification', {data: msg});
