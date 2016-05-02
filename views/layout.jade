@@ -42,7 +42,7 @@ html
                     
                 form.navbar-form.navbar-right(role='search' action="/search" method="get")
                     .form-group
-                        input.form-control(type='text', placeholder = 'search' name='query')
+                        input.form-control(type='text', placeholder = 'search', name='query', value=searchTerm ? "#{searchTerm}" : "")
                         button.btn.btn-info(type='submit') Submit
         // /.nav-collapse
 

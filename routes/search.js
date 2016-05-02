@@ -213,7 +213,8 @@ router.get('/', function(req, res, next){
                     loginInfo : loginInfo,
                     books : result,
                     authors: authResult,
-                    users : userResult
+                    users : userResult,
+                    searchTerm : searchTerm
                 });
                 
             });
