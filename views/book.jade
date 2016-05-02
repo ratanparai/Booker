@@ -4,7 +4,15 @@ block content
     .container
         .row
             .col-md-3
-                img.single-book-image.thumbnail(src='/images/books/' + bookinfo._id + '.jpg')
+                .row 
+                    .col-md-12
+                        img.single-book-image.thumbnail(src='/images/books/' + bookinfo._id + '.jpg')
+                .row
+                    .col-md-12.center
+                        if read
+                            a.btn.btn-warning.active(href="/users/markunread/#{bookinfo._id}") Mark as unread
+                        else 
+                            a.btn.btn-success(href="/users/markread/#{bookinfo._id}") Mark as read
             
             .col-md-9
                 h2.title #{bookinfo.title}
@@ -41,13 +49,13 @@ block content
                     .row
                         .col-md-12
                             .panel-body 
-                                if reads
+                                if readers
                                     .row
-                                        each read in reads
+                                        each reader in readers
                                             .col-md-2
-                                                a(href="/users/view/" + read.user_id.username)
-                                                    img.img-circle(src='/images/profile/' + read.user_id.profile_picture)
-                                                    p.center #{read.user_id.name}
+                                                a(href="/users/view/" + reader.user_id.username)
+                                                    img.img-circle(src='/images/profile/' + reader.user_id.profile_picture)
+                                                    p.center #{reader.user_id.name}
                                                 
 
     

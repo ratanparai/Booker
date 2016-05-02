@@ -7,6 +7,7 @@ var _ = require('underscore');
 
 var Friendship = require('../models/friendship');
 var Progress = require('../models/progress');
+var Read = require('../models/read');
 
 // multipart form middleware
 var multer = require('multer');
@@ -398,7 +399,7 @@ router.post('/updatesettings' ,multer({ dest: './uploads/'}).single('upl'), func
             
             //socket.emit('refresh profile page', {url : '/images/profile/' + req.session.userid + '.' + extension});
             
-            pub.publish('session.' + req.session._id, pubToSub);
+            pub.publish('session.' + req.session.id, JSON.stringify(pubToSub));
             
         });
         
@@ -460,6 +461,39 @@ router.post('/updatesettings' ,multer({ dest: './uploads/'}).single('upl'), func
     
     
     res.redirect('back');
+});
+
+/**
+ * Mark book as read 
+ */
+router.get("/markread/:book_id", function(req, res, next) {
+    var book_id = req.params.book_id;
+    
+    var newRead = new Read({
+        user_id : req.session.userid,
+        book_id : book_id,
+        date : new Date()
+    });
+    
+    newRead.save((err, bookRes)=>{
+        if (err) return next(err);
+        
+        res.redirect('back');
+    });
+});
+
+/**
+ * Mark book as Un-read 
+ */
+router.get("/markunread/:book_id", (req, res, next) => {
+    var book_id = req.params.book_id;
+    
+    Read.remove({user_id : req.session.userid, book_id : book_id}, (err) => {
+       if (err) return next(err);
+       
+       res.redirect('back');
+        
+    });
 });
 
 

@@ -32,8 +32,10 @@ var socket = io.connect('http://localhost:8056');
 
 socket.on('refresh profile page', function(data){
     console.log("refresh profile page");
+    console.dir(data);
     // load image
-    $('.img-circle').src = data.url ;
+    $('.profile-main-image').src = data.url ;
+    $('.profile-setting-image').src = data.url;
     console.log("page refresh initiated");
     //location.reload();
 });

@@ -88,13 +88,16 @@ io.on('connection', function(socket){
   
   
   sub.on("message", function(channel, message){
+    console.dir(message);
     var msg = JSON.parse(message);
-    console.log("Receiving API content.");
+    console.log("Receiving  content.");
+    console.dir(message);
     
     if(typeof msg.search !== 'undefined'){
       //console.log(msg.search);
       socket.emit("new book in search", msg.search);
     } else if (typeof msg.profile_pic_update !== 'undefined') {
+        console.log("Profile picture update.");
         socket.emit('refresh profile page', msg.profile_pic_update);
     } else if(typeof msg.startReading !== 'undefined') {
         socket.emit('notification', msg.startReading);

@@ -284,6 +284,12 @@ router.post('/progress', function(req, res, next){
                             
                         }
                         
+                        var toPub = {
+                            readingProgress : progResDoc
+                        }
+                        
+                        pub.publish('profile.'+ userid, JSON.stringify(toPub));
+                        
                         console.log('tLastUpdate: ' + tLastUpdate + ' tNewUpdate: ' + tNewUpdate);
                         
                         

@@ -121,6 +121,8 @@ goodreads.prototype.findBook = function(title, author, cb) {
 goodreads.prototype.saveSingleBookInfo = function(jsonResponse, cb) {
     var resObj = JSON.parse(jsonResponse);
     
+    console.log("starting process of saving singleBookInfo from API call");
+    
     try {
         var bookInfo = resObj.GoodreadsResponse.book[0];
     
@@ -130,7 +132,7 @@ goodreads.prototype.saveSingleBookInfo = function(jsonResponse, cb) {
         singleBook.goodreads_id = bookInfo.id[0];
         singleBook.isbn = bookInfo.isbn[0];
         singleBook.isbn13 = bookInfo.isbn13[0];
-        singleBook.authorId = bookInfo.authors[0].author[0].id[0];
+        singleBook.author_goodreads_id = bookInfo.authors[0].author[0].id[0];
         singleBook.authorName = bookInfo.authors[0].author[0].name[0];
         singleBook.bookImage = bookInfo.image_url[0];
         singleBook.authorImage = bookInfo.authors[0].author[0].image_url[0]._;
@@ -146,54 +148,117 @@ goodreads.prototype.saveSingleBookInfo = function(jsonResponse, cb) {
         return cb(cusError);
     }
     
-    
-    console.log('Author image is ' + singleBook.authorImage)
-    
-    Book.findOne({goodreads_id : singleBook.goodreads_id}, function (err, findBookRes){
-        if(err) return console.dir(err);
+    // check if author is already in database or not
+    Author.findOne({goodreads_id: singleBook.author_goodreads_id}, (err, authorRes) => {
+        if (err){
+            return cb(err);
+        }
         
-        if(findBookRes){
-            return cb(null, findBookRes);
-        } else {
-            // save book information
-            var newBook = new Book({
-                    title : singleBook.title,
-                    goodreads_id : singleBook.goodreads_id,
-                    isbn : singleBook.isbn,
-                    isbn13 : singleBook.isbn13,
-                    author_id : singleBook.authorId,
-                    author_name : singleBook.authorName,
-                    image : singleBook.bookImage,
-                    publication_date : singleBook.publicationYear,
-                    language : singleBook.language,
-                    description : singleBook.description
-            });
+        if (authorRes) {
+            // hava author 
+            // SO save the book
+            console.log("Author found in database");
             
-            newBook.save(function(err, book){
-                if(err) return cb(err);
+            Book.findOne({goodreads_id : singleBook.goodreads_id}, function (err, findBookRes){
+                if(err) return console.dir(err);
                 
-                console.log("Book info saved");
-                // Download image to local directory
-                request(book.image, {encoding : 'binary'}, function(err, res, body){
-                    fs.writeFile('./public/images/books/' + book._id + '.jpg', body, 'binary', function(err){
-                        if(err) console.dir(err);
-                        
-                        console.log("Saved " + book.image);
+                if(findBookRes){
+                    console.log("Book found in database");
+                    return cb(null, findBookRes);
+                } else {
+                    // save book information
+                    
+                    console.log("Book not found in database. Saving...");
+                    
+                    var newBook = new Book({
+                            title : singleBook.title,
+                            goodreads_id : singleBook.goodreads_id,
+                            isbn : singleBook.isbn,
+                            isbn13 : singleBook.isbn13,
+                            author_id : authorRes._id,
+                            author_name : singleBook.authorName,
+                            image : singleBook.bookImage,
+                            publication_date : singleBook.publicationYear,
+                            language : singleBook.language,
+                            description : singleBook.description
                     });
-                });
-                
-                cb(null, newBook);
+                    
+                    newBook.save(function(err, book){
+                        if(err) return cb(err);
+                        
+                        console.log("Book info saved");
+                        // Download image to local directory
+                        url = book.image;
+                        var makeItLargeLocation = url.indexOf("m/", 30);
+                        if(makeItLargeLocation !== -1) {
+                            url = url.substr(0, makeItLargeLocation) + 'l' + url.substr(makeItLargeLocation+1);
+                        } 
+                        
+                        request(url, {encoding : 'binary'}, function(err, res, body){
+                            fs.writeFile('./public/images/books/' + book._id + '.jpg', body, 'binary', function(err){
+                                if(err) console.dir(err);
+                                
+                                console.log("Saved " + book.image);
+                            });
+                        });
+                        
+                        cb(null, newBook);
+                        
+                    });
+                }
                 
             });
+        } else {
+            // no author found so save author
+            
+            console.log("No author in databse in this name");
             
             var newAuthor = new Author({
                 name : singleBook.authorName,
-                goodreads_id : singleBook.authorId,
+                goodreads_id : singleBook.author_goodreads_id,
                 image : singleBook.authorImage
             });
             
             newAuthor.save(function(err, author){
                 if(err) console.dir(err);
+                
+                console.log("Author information saved. Now saving book info...");
+                
+                var newBook = new Book({
+                        title : singleBook.title,
+                        goodreads_id : singleBook.goodreads_id,
+                        isbn : singleBook.isbn,
+                        isbn13 : singleBook.isbn13,
+                        author_id : author._id,
+                        author_name : singleBook.authorName,
+                        image : singleBook.bookImage,
+                        publication_date : singleBook.publicationYear,
+                        language : singleBook.language,
+                        description : singleBook.description
+                });
+                
+                newBook.save(function(err, book){
+                    if(err) return cb(err);
+                    
+                    console.log("Book info saved");
+                    // Download image to local directory
+                    url = book.image;
+                    var makeItLargeLocation = url.indexOf("m/", 30);
+                    if(makeItLargeLocation !== -1) {
+                        url = url.substr(0, makeItLargeLocation) + 'l' + url.substr(makeItLargeLocation+1);
+                    }
+                    request(url, {encoding : 'binary'}, function(err, res, body){
+                        fs.writeFile('./public/images/books/' + book._id + '.jpg', body, 'binary', function(err){
+                            if(err) console.dir(err);
+                            
+                            console.log("Saved " + book.image);
+                        });
+                    });
+                    
+                    cb(null, newBook);
+                    
+                });
+                
                 
                 request(author.image, {encoding : 'binary'}, function(err, res, body){
                     if(err) console.dir(err);
@@ -207,16 +272,9 @@ goodreads.prototype.saveSingleBookInfo = function(jsonResponse, cb) {
                 });
             });
             
-            
         }
         
     });
-
-    //console.dir(singleBook)
-    //listOfBooks.push(singleBook);
-    
-    
-
 }
 
 /**

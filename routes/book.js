@@ -6,6 +6,7 @@ var User = require('../models/user')
 var Author = require('../models/author')
 var Comment = require('../models/comment');
 var Progress = require('../models/progress');
+var Read = require('../models/read');
 
 var moment = require('moment');
 
@@ -27,10 +28,13 @@ router.get('/:id', function(req, res, next){
     var book_id = req.params.id;
     // find a book
     Book.findOne({_id : book_id}, function (err, book) {
-        if(err) return console.dir(err);
+        if(err) {
+            console.dir(err);
+            return next();
+        }
         
         if(book){
-            Author.findOne({goodreads_id: book.author_id}, function(err, author){
+            Author.findOne({_id: book.author_id}, function(err, author){
                 if(err) return console.log(err);
                 
                 
@@ -54,18 +58,33 @@ router.get('/:id', function(req, res, next){
                             .exec(function(err, progresses){
                                 if (err) return  console.dir(err);
                                 
-                                
+                                Read.findOne({user_id : req.session.userid, book_id : book_id}, (err, readResult) => {
+                                    if (err) return console.dir(err);
+                                    
+                                    Read
+                                        .find({book_id : book_id})
+                                        .populate('user_id')
+                                        .exec((err, readers) => {
+                                            
+                                            res.render('book', {
+                                                title : book.title,
+                                                bookinfo: book,
+                                                author : author,
+                                                loginInfo : loginInfo,
+                                                comments : comment,
+                                                progresses : progresses,
+                                                moment : moment,
+                                                read : readResult,
+                                                readers : readers
+                                            });
+                                            
+                                        });
+                                    
+                                    
+                                });
                                 //console.log(progresses.user_id.name);
                                 
-                                res.render('book', {
-                                    title : book.title,
-                                    bookinfo: book,
-                                    author : author,
-                                    loginInfo : loginInfo,
-                                    comments : comment,
-                                    progresses : progresses,
-                                    moment : moment
-                                });
+                                
                             });
 
                 });
@@ -74,7 +93,7 @@ router.get('/:id', function(req, res, next){
             });
             
         } else {
-            res.send('no book found');
+            next();
         }
         
     }) 

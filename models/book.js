@@ -8,7 +8,7 @@ var bookSchema = new Schema({
    goodreads_id : {type: Number, unique : true},
    isbn : String,
    isbn13 : String,
-   author_id : Number, 
+   author_id : {type: Schema.Types.ObjectId, ref: 'Author'},
    author_name : String,
    image : String,
    publication_date : Number,

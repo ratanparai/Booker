@@ -56,7 +56,7 @@ var addMissingBooks = function(books, req, author_id) {
                         goodreads_id : goodreads_id ,
                         isbn : isbn,
                         isbn13 : isbn13,
-                        author_id : thisBook.authors[0].author[0].id[0], 
+                        author_id : author_id, 
                         author_name : thisBook.authors[0].author[0].name[0],
                         image : newImage,
                         publication_date :thisBook.publication_year[0],
@@ -64,7 +64,10 @@ var addMissingBooks = function(books, req, author_id) {
                     });
                     
                     saveBook.save((err, book) => {
-                       if (err) return step(x+1);
+                       if (err) {
+                           console.log(err);
+                           return step(x+1);
+                       }
                        
                        // Download image to local directory
                        request(book.image, {encoding : 'binary'}, function(err, res, body){
@@ -122,9 +125,13 @@ router.get('/:author_id', (req, res, next) => {
     Author.findOne({_id : authorId}, (err, authorRes) => {
         if (err) return res.json({err : err});
         
+        if(!authorRes) {
+            return next();
+        }
+        
         if (authorRes.description) {
             
-            Book.find({author_id : authorRes.goodreads_id}, (err , bookRes) => {
+            Book.find({author_id : authorRes._id}, (err , bookRes) => {
                 if(err) return res.send(err);
                 
                 res.render('author',{
@@ -146,7 +153,7 @@ router.get('/:author_id', (req, res, next) => {
                 authorRes.save((err, docAuthor) => {
                     if (err) return res.json(err);
                     
-                    Book.find({author_id : docAuthor.goodreads_id}, (err , bookRes) => {
+                    Book.find({author_id : docAuthor._id}, (err , bookRes) => {
                         if(err) return res.send(err);
                         
                         res.render('author',{
