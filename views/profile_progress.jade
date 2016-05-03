@@ -4,7 +4,7 @@
         - number = Math.round(book.percentage)
         .panel.panel-default
             .panel-body
-                .row.progress-book
+                .row.progress-book(data-book-id="#{book.book_id._id}", data-user-id="#{book.user_id}", data-progress-id="#{book._id}")
                     .col-md-2
                         img.thumbnail(src="/images/books/#{book.book_id._id}.jpg")
                     .col-md-10

@@ -4,10 +4,12 @@ var router = express.Router();
 var mime = require('mime');
 
 var _ = require('underscore');
+var moment = require('moment');
 
 var Friendship = require('../models/friendship');
 var Progress = require('../models/progress');
 var Read = require('../models/read');
+var Dashboard = require('../models/dashboard');
 
 // multipart form middleware
 var multer = require('multer');
@@ -291,16 +293,42 @@ router.get('/view/:username/:action?', function(req, res, next){
                     });
                     
                     
+                } else if (!action) {
+                    
+                    // history
+                    Dashboard
+                        .find({user_id : userResult._id})
+                        .populate('book_id', 'title')
+                        .sort('-update_on')
+                        .exec((err, historyRes) => {
+                           if (err){ 
+                               console.dir(err);
+                               return next(err);
+                           }
+                           
+                           var capitalizeFirstLatter = function (string) {
+                                return string.charAt(0).toUpperCase() + string.slice(1);
+                            }
+                           
+                           console.dir(historyRes);
+                           res.render('profile', {
+                                title : 'profile',
+                                session: req.session,
+                                loginInfo : loginInfo,
+                                user : userResult,
+                                follower : friendsWith.length,
+                                isFriend : isFriend,
+                                action : 'history',
+                                histories : historyRes,
+                                moment : moment,
+                                capitalize : capitalizeFirstLatter
+                            });
+                            
+                        });
+                    
+                    
                 } else {
-                    res.render('profile', {
-                        title : 'profile',
-                        session: req.session,
-                        loginInfo : loginInfo,
-                        user : userResult,
-                        follower : friendsWith.length,
-                        isFriend : isFriend,
-                        action : action
-                    });
+                    return next();
                 }
                 
             });
@@ -479,6 +507,17 @@ router.get("/markread/:book_id", function(req, res, next) {
         if (err) return next(err);
         
         res.redirect('back');
+        
+        var dashPub = {
+            add : {
+                type: 'read',
+                user_id : req.session.userid,
+                book_id : book_id
+            }
+        }
+        
+        pub.publish('dashboard', JSON.stringify(dashPub));
+        
     });
 });
 
@@ -492,6 +531,16 @@ router.get("/markunread/:book_id", (req, res, next) => {
        if (err) return next(err);
        
        res.redirect('back');
+       
+       var dashPub = {
+            remove : {
+                type: 'read',
+                user_id : req.session.userid,
+                book_id : book_id
+            }
+        }
+        
+        pub.publish('dashboard', JSON.stringify(dashPub));
         
     });
 });

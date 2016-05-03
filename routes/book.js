@@ -125,6 +125,17 @@ router.post('/comment', function(req, res, next){
             if (err) return console.log(err);
             
             res.redirect('back');
+            
+            var dashPub = {
+                add : {
+                    type : "review",
+                    user_id : req.session.userid,
+                    book_id : book_id
+                }
+            }
+            
+            pub.publish('dashboard', JSON.stringify(dashPub));
+            
         });
         
         

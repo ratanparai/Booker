@@ -1,0 +1,34 @@
+.container
+    .row
+        - var processing = '';
+        - var i = 0
+        each item in histories
+            - var nowProcessing = moment(item.update_on).format('dddd MMM D, YYYY');
+            
+            if nowProcessing !== processing 
+                - i = 0
+                
+                .no-top
+                    h3.history-date #{nowProcessing}
+                hr
+                    
+                - processing = nowProcessing
+            
+            if i === 6
+                .no-top
+                - i = 0
+                    
+            .col-md-2(data-book-id="#{item.book_id._id}", data-history-id="#{item._id}", data-user-id="#{item.user_id}")
+                .panel.panel-default
+                    .panel-dashboard-image.panel-heading
+                        a(href="/book/#{item.book_id._id}")
+                            img.thumbnail(src="/images/books/#{item.book_id._id}.jpg")
+                    .panel-body.dashboard-activity-details
+
+                        - var type = capitalize(item.type)
+                        | #{type} #[a(href="/book/#{item.book_id._id}") #{item.book_id.title}]
+                        .activity-date #{moment(item.update_on).calendar()}
+                        
+                        - i++
+                                
+           

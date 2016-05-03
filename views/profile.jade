@@ -26,7 +26,7 @@ block content
             .profile-nav
                 ul.prof-nav
                     li  
-                        a(class = action ? '' : 'active' ,href='/users/view/'+ user.username ) History
+                        a(class = action == 'history' ? 'active' : '' ,href='/users/view/'+ user.username ) History
                     li 
                         a(class= action == 'progress' ? 'active' : '' ,href='/users/view/'+ user.username +'/progress/') Progress
                     li
@@ -44,6 +44,9 @@ block content
         
     if action == 'progress'
         include ./profile_progress
+        
+    if action =='history'
+        include ./profile_history
    
         
     

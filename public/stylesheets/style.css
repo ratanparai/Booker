@@ -151,3 +151,52 @@ img {
     height: 132px;
     width: 132px;
 }
+
+.panel-dashboard-image {
+    padding: 0px;
+}
+
+.panel-dashboard-image .thumbnail {
+    margin-bottom: 0px;
+}
+
+.poster-under {
+    position: relative;
+}
+
+.dashboard-profile-small {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    top: -20px;
+    left: 50%;
+    margin-left: -20px;
+}
+
+.dashboard-activity-details {
+    padding: 5px;
+    padding-top: 18px;
+    font-size: 12px;
+}
+
+.activity-date {
+    background-color: #ccc;
+    color: #fff;
+}
+
+.no-top {
+    margin-top: 0;
+    clear: both;
+}
+
+.history-date {
+    margin-left: 16px;
+}
+
+.dashboard-header {
+    margin-left: 16px;
+}
+
+.left-activity {
+    border-right: 1px solid #ccc;
+}

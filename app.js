@@ -46,6 +46,43 @@ var io = require("socket.io").listen(server);
 server.listen(8056);
 
 
+// for processing dashboad document
+dashSub = redis.createClient();
+dashSub.subscribe('dashboard');
+
+var Dashboard = require('./models/dashboard');
+
+dashSub.on('message', (channel, message) => {
+  console.log("receiving data from dashboad channel...");
+  console.log(message);
+  var msg = JSON.parse(message);
+  // 
+  //Dashboard.findOneAndUpdate({})
+  // if add 
+  if (typeof msg.add !== 'undefined') {
+    // add entry
+    
+    var newDashboard = new Dashboard({
+      type : msg.add.type,
+      user_id: msg.add.user_id,
+      book_id : msg.add.book_id,
+      update_on : new Date()
+    });
+    
+    newDashboard.save((err) => {
+      if (err) console.dir(err);
+    });
+    
+  } else {
+    // remove entry
+    Dashboard.remove({type:msg.remove.type, user_id : msg.remove.user_id, book_id: msg.remove.book_id}, (err) => {
+      if (err) console.dir(err);
+    });
+  }
+  
+});
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -88,10 +125,10 @@ io.on('connection', function(socket){
   
   
   sub.on("message", function(channel, message){
-    console.dir(message);
+    //console.dir(message);
     var msg = JSON.parse(message);
     console.log("Receiving  content.");
-    console.dir(message);
+    //console.dir(message);
     
     if(typeof msg.search !== 'undefined'){
       //console.log(msg.search);

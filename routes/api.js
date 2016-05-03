@@ -290,10 +290,13 @@ router.post('/progress', function(req, res, next){
                         
                         pub.publish('profile.'+ userid, JSON.stringify(toPub));
                         
-                        console.log('tLastUpdate: ' + tLastUpdate + ' tNewUpdate: ' + tNewUpdate);
+                        // publish for saving to dashboard
                         
                         
-                        console.dir(JSON.stringify(progResDoc));
+                        //console.log('tLastUpdate: ' + tLastUpdate + ' tNewUpdate: ' + tNewUpdate);
+                        
+                        
+                        //console.dir(JSON.stringify(progResDoc));
                         //res.json({message: "Book progress update successful"});
                     } )
                     
@@ -335,7 +338,15 @@ router.post('/progress', function(req, res, next){
                 //     .populate('book_id user_id')
                 //     .exec(function(err, progResult){
                 //         if (err) console.dir(err);
-
+                var dashboardPub = {
+                    add : {
+                        type: 'start reading',
+                        book_id : book_id,
+                        user_id :userid 
+                    }
+                }
+                pub.publish('dashboard', JSON.stringify(dashboardPub));
+                console.log("Published to dashboad channel");
                         
                         
                 //     });
