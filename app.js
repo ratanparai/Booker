@@ -38,6 +38,8 @@ var books = require('./routes/books');
 var api = require('./routes/api');
 var author = require('./routes/author');
 
+var moment = require('moment');
+
 var app = express();
 
 var http = require('http');
@@ -140,7 +142,14 @@ io.on('connection', function(socket){
         socket.emit('notification', msg.startReading);
     } else if (typeof msg.authorProfile !== 'undefined') {
         socket.emit("author profile new book", msg.authorProfile);
-    }else {
+    }else if (typeof msg.read !== 'undefined'){
+        console.log("emiting dashboard read");
+        
+        msg.read.date = moment(msg.read.date).calendar();
+        
+        socket.emit('read notification', msg.read);
+        socket.emit("dashboard network read", msg.read);
+    } else {
       console.log("Message "+ msg + " on channel " + channel+ " arived");
       socket.emit('notification', {data: msg});
     }

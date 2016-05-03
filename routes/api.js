@@ -6,6 +6,7 @@ var goodreads = require('../models/goodreads');
 var Author = require('../models/author');
 var Book = require('../models/book');
 var Progress = require('../models/progress');
+var Dashboard = require('../models/dashboard');
 var fs = require('fs');
 
 
@@ -288,16 +289,9 @@ router.post('/progress', function(req, res, next){
                             readingProgress : progResDoc
                         }
                         
-                        pub.publish('profile.'+ userid, JSON.stringify(toPub));
-                        
-                        // publish for saving to dashboard
-                        
-                        
-                        //console.log('tLastUpdate: ' + tLastUpdate + ' tNewUpdate: ' + tNewUpdate);
-                        
-                        
-                        //console.dir(JSON.stringify(progResDoc));
-                        //res.json({message: "Book progress update successful"});
+                        pub.publish('profile.progress.'+ userid, JSON.stringify(toPub));
+                        pub.publish(userid, JSON.stringify(toPub));
+
                     } )
                     
                 
@@ -333,26 +327,23 @@ router.post('/progress', function(req, res, next){
                         pub.publish(req.myAuth.userid, JSON.stringify(pubToProg));
                     } )
                 
-                // Progress
-                //     .find({book_id : book_id, user_id : userid})
-                //     .populate('book_id user_id')
-                //     .exec(function(err, progResult){
-                //         if (err) console.dir(err);
-                var dashboardPub = {
-                    add : {
-                        type: 'start reading',
-                        book_id : book_id,
-                        user_id :userid 
-                    }
-                }
-                pub.publish('dashboard', JSON.stringify(dashboardPub));
-                console.log("Published to dashboad channel");
-                        
-                        
-                //     });
-                
-                    
+                // send response message to book api    
                 res.json({message: "Book progress update successful"});
+                
+                // add this information to dashboard document 
+                // as start reading date 
+                var newDashboard = new Dashboard({
+                    type : 'start reading',
+                    user_id: userid,
+                    book_id : book_id,
+                    update_on : new Date()
+                });
+                
+                newDashboard.save((err) => {
+                    if (err) console.dir(err);
+                });
+                
+                
                 
             })
         }

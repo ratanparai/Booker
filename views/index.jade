@@ -44,26 +44,32 @@ block content
                                 
                         
                     
-            .col-md-6.dashboard-network-activity
-                h3.dashboard-header Network Activity
-                - var i = 0
-                each item in dashboards
-                    if i === 3
-                        .clearfix(visible-xs-block="")
-                        - i = 0
-                    .col-md-4
-                        .panel.panel-default
-                            .panel-dashboard-image.panel-heading
-                                a(href="/book/#{item.book_id._id}")
-                                    img.thumbnail(src="/images/books/#{item.book_id._id}.jpg")
-                                .poster-under
-                                    a(href="/users/view/#{item.user_id.username}")
-                                        img.dashboard-profile-small.img-circle(src="/images/profile/#{item.user_id.profile_picture}")
+            .col-md-6
+                .row
+                    h3.dashboard-header Network Activity
+                .row.network-activity
+                    - var i = 0
+                    - var historyId = dashboards.length
+                    each item in dashboards
+                        if i === 3
+                            .clearfix(visible-xs-block="")
+                            - i = 0
+                        div(class="col-md-4 network-history-#{historyId}")
+                            .panel.panel-default
+                                .panel-dashboard-image.panel-heading
+                                    a(href="/book/#{item.book_id._id}")
+                                        img.thumbnail(src="/images/books/#{item.book_id._id}.jpg")
+                                    .poster-under
+                                        a(href="/users/view/#{item.user_id.username}")
+                                            img.dashboard-profile-small.img-circle(src="/images/profile/#{item.user_id.profile_picture}")
+                                    
+                                .panel-body.dashboard-activity-details 
+                                    #[a(href="/users/view/#{item.user_id.username}") #{item.user_id.name}] #{item.type} #[a(href="/book/#{item.book_id._id}") #{item.book_id.title}]
+                                    .activity-date #{moment(item.update_on).calendar()}
+                                    - i++
+                                    - historyId--
                                 
-                            .panel-body.dashboard-activity-details 
-                                #[a(href="/users/view/#{item.user_id.username}") #{item.user_id.name}] #{item.type} #[a(href="/book/#{item.book_id._id}") #{item.book_id.title}]
-                                .activity-date #{moment(item.update_on).calendar()}
-                                - i++
+            script(src="/javascripts/dashboard.js")
                             
 
                         

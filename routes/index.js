@@ -51,10 +51,10 @@ router.get('/', function(req, res, next) {
 
 
     } else {
-        //console.log('no user is logged in');
+        console.log('no user is logged in');
         //console.log(loginInfo);
             
-        res.render('index', { 
+        res.render('home', { 
             title: 'Booker',
             loginInfo : loginInfo
             });

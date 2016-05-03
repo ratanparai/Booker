@@ -495,6 +495,11 @@ router.post('/updatesettings' ,multer({ dest: './uploads/'}).single('upl'), func
  * Mark book as read 
  */
 router.get("/markread/:book_id", function(req, res, next) {
+    
+    if (typeof req.session.userid === 'undefined') {
+        return res.redirect('/');
+    }
+    
     var book_id = req.params.book_id;
     
     var newRead = new Read({
@@ -508,15 +513,50 @@ router.get("/markread/:book_id", function(req, res, next) {
         
         res.redirect('back');
         
-        var dashPub = {
-            add : {
-                type: 'read',
-                user_id : req.session.userid,
-                book_id : book_id
-            }
-        }
+        // add information to dashboard document to show in 
+        // dashboard of his/her friend
+        var newDashboard = new Dashboard({
+            type : 'read',
+            user_id : req.session.userid,
+            book_id : book_id,
+            update_on : new Date()
+        });
         
-        pub.publish('dashboard', JSON.stringify(dashPub));
+        newDashboard.save((err)=> {
+            if (err) console.dir(err);
+        });
+        
+        // because this book is marked as read 
+        // remove from progress 
+        Progress.remove({user_id : req.session.userid, book_id : book_id}, (err)=> {
+            if (err) console.dir(err);
+        });
+        
+        /**
+         * Publish BLOCK :
+         * 
+         * publish to required channel
+         * AT FIRST POPULATE 
+         */
+        var opts = [
+            {path: 'book_id', model:'Book'},
+            {path:'user_id', model:'User'}
+        ]
+        
+        Read
+            .populate(bookRes, opts, (err, progResult) => {
+                if (err) console.dir(err);
+                
+                
+                // now publish to required channels
+                
+                var pubToProg = {
+                    read : progResult
+                }
+                
+                pub.publish(req.session.userid, JSON.stringify(pubToProg));
+            } )
+            
         
     });
 });
@@ -532,16 +572,11 @@ router.get("/markunread/:book_id", (req, res, next) => {
        
        res.redirect('back');
        
-       var dashPub = {
-            remove : {
-                type: 'read',
-                user_id : req.session.userid,
-                book_id : book_id
-            }
-        }
-        
-        pub.publish('dashboard', JSON.stringify(dashPub));
-        
+       
+       // remove from dashboard document 
+       Dashboard.remove({type: 'read', user_id : req.session.userid, book_id: book_id}, (err)=>{
+           if (err) console.dor(err);
+       });
     });
 });
 
