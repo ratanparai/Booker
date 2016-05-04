@@ -8,6 +8,7 @@ var Comment = require('../models/comment');
 var Progress = require('../models/progress');
 var Read = require('../models/read');
 var Rating = require('../models/rating'); 
+var Dashboard = require('../models/dashboard');
 
 var moment = require('moment');
 
@@ -168,16 +169,37 @@ router.post('/comment', function(req, res, next){
             
             res.redirect('back');
             
-            var dashPub = {
-                add : {
-                    type : "review",
-                    user_id : req.session.userid,
-                    book_id : book_id
-                }
-            }
             
-            pub.publish('dashboard', JSON.stringify(dashPub));
+            var newDashboard = new Dashboard({
+                type : 'review',
+                user_id : req.session.userid,
+                book_id: book_id,
+                update_on : new Date()
+            });
             
+            newDashboard.save((err, doc) => {
+                if (err) console.log(err);
+                
+                var opts = [
+                    {path: 'book_id', model:'Book'},
+                    {path:'user_id', model:'User'}
+                ]
+                
+                Read
+                    .populate(doc, opts, (err, progResult) => {
+                        if (err) console.dir(err);
+                        
+                        
+                        // now publish to required channels
+                        
+                        var pubToProg = {
+                            review : progResult
+                        }
+                        
+                        pub.publish(req.session.userid, JSON.stringify(pubToProg));
+                    } )
+                
+            });    
         });
         
         

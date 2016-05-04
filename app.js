@@ -139,6 +139,7 @@ io.on('connection', function(socket){
         console.log("Profile picture update.");
         socket.emit('refresh profile page', msg.profile_pic_update);
     } else if(typeof msg.startReading !== 'undefined') {
+        console.log(msg.startReading);
         socket.emit('notification', msg.startReading);
     } else if (typeof msg.authorProfile !== 'undefined') {
         socket.emit("author profile new book", msg.authorProfile);
@@ -149,6 +150,23 @@ io.on('connection', function(socket){
         
         socket.emit('read notification', msg.read);
         socket.emit("dashboard network read", msg.read);
+    } else if (typeof msg.review !== 'undefined'){
+        
+        console.log("emiting review...");
+        
+        msg.review.update_on = moment(msg.review.update_on).calendar();
+        
+        socket.emit('review notification', msg.review);
+        socket.emit('dashboard network review', msg.review);
+        
+        
+    } else if (typeof msg.startReadingNewBook !== 'undefined') {
+        // reading new book
+        // dashboard add 
+        msg.startReadingNewBook.last_update = moment(msg.startReadingNewBook.last_update).calendar();
+        
+        socket.emit('dashboard reading new book', msg.startReadingNewBook);
+        
     } else {
       console.log("Message "+ msg + " on channel " + channel+ " arived");
       socket.emit('notification', {data: msg});

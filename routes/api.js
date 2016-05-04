@@ -97,14 +97,14 @@ router.get('/search/book', function(req, res,next){
     // if author name is provided
     if (author) {
         Author.findOne({name: new RegExp(author, 'i')}, function(err, authorRes){
-            if (err) return next(err);
+            if (err) return console.log(err);
             
             if(authorRes){
                 // I have author info
                 // now search book using the author id 
                 
-                Book.findOne({title : new RegExp(title), author_id : authorRes.goodreads_id}, function(err, bookRes){
-                    if (err) return next(err);
+                Book.findOne({title : new RegExp(title), author_id : authorRes._id}, function(err, bookRes){
+                    if (err) return console.log(err);
                     
                     if (bookRes){
                         // yeah! Good book info from database :)
@@ -325,6 +325,15 @@ router.post('/progress', function(req, res, next){
                         }
                         // console.dir(progResult);
                         pub.publish(req.myAuth.userid, JSON.stringify(pubToProg));
+                        
+                        var pubToProg = {
+                            startReadingNewBook : progResult
+                        }
+                        // console.dir(progResult);
+                        pub.publish(req.myAuth.userid, JSON.stringify(pubToProg));
+                        
+                        
+                        
                     } )
                 
                 // send response message to book api    

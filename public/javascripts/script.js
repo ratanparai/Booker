@@ -79,6 +79,14 @@ socket.on('read notification', function(data){
     browserNotification(body, icon, title);
 });
 
+socket.on('review notification', function(data) {
+    var icon = 'http://localhost:3000/images/profile/' + data.user_id.profile_picture;
+    var title = data.user_id.name;
+    var body = data.user_id.name + ' write a comment on ' + data.book_id.title;
+    
+    browserNotification(body, icon, title);
+});
+
 function browserNotification(theBody, theIcon, data) {
     
     var options = {
