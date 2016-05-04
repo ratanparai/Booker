@@ -1,4 +1,4 @@
-.container
+.container.profile-progress-outer
 
     each book in progresses
         - number = Math.round(book.percentage)
@@ -20,7 +20,10 @@
                                 .progress-bar(role="progressbar", aria-valuenow=number,  aria-valuemin="0", aria-valuemax="100", style="width:#{number}%;") #{number}%
                                 
                         .row.progress-book-description
-                            p #{book.book_id.description}
+                            - var description = book.book_id.description;
+                            - description = description.replace(/<br>/g, '');
+                            - console.log(description);
+                            p #{description}
                             
                         .row.progress-book-show-more
                             a(href="/book/#{book.book_id._id}") More

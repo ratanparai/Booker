@@ -336,6 +336,12 @@ router.post('/progress', function(req, res, next){
                         // console.dir(progResult);
                         pub.publish(req.myAuth.userid, JSON.stringify(pubToProg));
                         
+                        var toProgPub = {
+                            profileProgress : progResult
+                        }
+                        
+                        pub.publish('profile.progress.'+ userid, JSON.stringify(toProgPub));
+                        
                         
                         
                     } )
