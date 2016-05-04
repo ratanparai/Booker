@@ -24,7 +24,6 @@ $('#profile-update-form').submit(function(event){
     
 });
 
-$("#rating").rating();
 
 
 // SOCKET.IO 

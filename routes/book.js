@@ -7,6 +7,7 @@ var Author = require('../models/author')
 var Comment = require('../models/comment');
 var Progress = require('../models/progress');
 var Read = require('../models/read');
+var Rating = require('../models/rating'); 
 
 var moment = require('moment');
 
@@ -66,17 +67,58 @@ router.get('/:id', function(req, res, next){
                                         .populate('user_id')
                                         .exec((err, readers) => {
                                             
-                                            res.render('book', {
-                                                title : book.title,
-                                                bookinfo: book,
-                                                author : author,
-                                                loginInfo : loginInfo,
-                                                comments : comment,
-                                                progresses : progresses,
-                                                moment : moment,
-                                                read : readResult,
-                                                readers : readers
-                                            });
+                                            if (req.session.userid) {
+                                                
+                                                Rating.findOne({user_id : req.session.userid, book_id : book_id},(err, rateRes)=>{
+                                                    if (err) console.log(err);
+                                                    
+                                                    console.dir(rateRes);
+                                                    
+                                                    if (rateRes) {
+                                                        res.render('book', {
+                                                            title : book.title,
+                                                            bookinfo: book,
+                                                            author : author,
+                                                            loginInfo : loginInfo,
+                                                            comments : comment,
+                                                            progresses : progresses,
+                                                            moment : moment,
+                                                            read : readResult,
+                                                            readers : readers,
+                                                            myrating : rateRes.rating
+                                                        });
+                                                    } else {
+                                                        rating = 0;
+                                                        res.render('book', {
+                                                            title : book.title,
+                                                            bookinfo: book,
+                                                            author : author,
+                                                            loginInfo : loginInfo,
+                                                            comments : comment,
+                                                            progresses : progresses,
+                                                            moment : moment,
+                                                            read : readResult,
+                                                            readers : readers,
+                                                            myrating : rating
+                                                        });
+                                                    }
+                                                    
+                                                });
+                                            } else {
+                                                res.render('book', {
+                                                    title : book.title,
+                                                    bookinfo: book,
+                                                    author : author,
+                                                    loginInfo : loginInfo,
+                                                    comments : comment,
+                                                    progresses : progresses,
+                                                    moment : moment,
+                                                    read : readResult,
+                                                    readers : readers
+                                                });
+                                            }
+                                            
+                                            
                                             
                                         });
                                     
@@ -143,6 +185,60 @@ router.post('/comment', function(req, res, next){
     } else {
         res.redirect('/users/login')
     }
+    
+    
+    
+});
+
+router.post('/rate', (req, res, next) => {
+    var rating = req.body.rating;
+    var book_id = req.body.book_id;
+    var user_id = req.session.userid;
+    
+    console.log(book_id + ' rate ' + rating);
+    
+    Rating.remove({book_id : book_id, user_id : user_id}, (err) => {
+        if (err) console.log(err);
+        
+        var newRating = new Rating({
+            book_id : book_id,
+            user_id : user_id,
+            rating : rating
+        });
+        
+        newRating.save((err)=> {
+            if (err) console.log(err);
+            
+            
+            // update total rating of the book
+            Rating.find({book_id : book_id}, (err, docs) => {
+                if (err) console.log(err);
+                
+                // console.dir(docs);
+                var totalRateCount = docs.length;
+                console.log('total Rate found ' + totalRateCount );
+                
+                var sum = 0;
+                for (var i = 0; i<totalRateCount; i++) {
+                    console.dir(docs[i].rating);
+                    sum += docs[i].rating;
+                }
+                
+                
+                console.log("total rating" + sum);
+                
+                Book.findByIdAndUpdate(book_id, {total_rating: sum, total_vote : totalRateCount }, (err) => {
+                   if (err) console.dir(err); 
+                });
+                
+            });
+            
+            
+        });
+        
+    });
+    
+    res.json({message : 'received'});
     
     
     

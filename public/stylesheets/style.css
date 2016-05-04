@@ -200,3 +200,25 @@ img {
 .left-activity {
     border-right: 1px solid #ccc;
 }
+
+span.stars, span.stars span {
+    display: block;
+    background: url(/images/stars.png) 0 -16px repeat-x;
+    width: 80px;
+    height: 16px;
+}
+
+span.stars span {
+    background-position: 0 0;
+}
+
+.single-book-rating {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.rate-in-word {
+    top: 0px;
+    position: absolute;
+    margin-left: 86px;
+}

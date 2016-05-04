@@ -13,11 +13,22 @@ block content
                             a.btn.btn-warning.active(href="/users/markunread/#{bookinfo._id}") Mark as unread
                         else 
                             a.btn.btn-success(href="/users/markread/#{bookinfo._id}") Mark as read
+                        
             
             .col-md-9
                 h2.title #{bookinfo.title}
                 h4.author-name 
                     a(href='/author/'+author._id) #{author.name}
+                - var thisBookRating = bookinfo.total_rating / bookinfo.total_vote;
+                .single-book-rating
+                    - var width = (80 * thisBookRating) / 5;
+                    - if (isNaN(width)) {
+                    -   width = 0;   
+                    - }
+                    - if (isNaN(thisBookRating)) thisBookRating = 0;
+                    span.stars
+                        span(style="width:#{width}px")
+                    span.rate-in-word #{thisBookRating} (total vote !{bookinfo.total_vote})
                 .book-description !{bookinfo.description}
     hr
     
@@ -58,30 +69,29 @@ block content
                                                     p.center #{reader.user_id.name}
                                                 
 
-    
-    // if progresses.length !== 0
-    //     .container
-    //         .row
-    //             .col-md-12
-    //                 .panel.panel-primary
-    //                     .panel-heading Currently reading
-    //                     .panel-body 
-    //                         .row
-    //                             each progress in progresses
-    //                                 - number = Math.round(progress.percentage)
-    //                                 .col-md-2
-    //                                     a(href="/users/view/" + progress.user_id.username)
-    //                                         img.img-circle(src='/images/profile/' + progress.user_id.profile_picture)
-    //                                         p.center #{progress.user_id.name}
-    //                                     .progress
-    //                                         .progress-bar(role="progressbar", aria-valuenow=number  aria-valuemin="0", aria-valuemax="100", style="width:#{number}%") #{number}%
-    
     hr
     .container
         .row
             .col-md-12
             
-                input#rating.rating.rating-loading(type="text", data-size="lg" )
+                //input#rating.rating.rating-loading(type="text", data-size="lg" )
+                input(type='hidden' id="book_id", value="#{bookinfo._id}")
+                - var myrate = myrating;
+                - var i = 5; 
+                - var rateValue = 1;
+                - var uncheckedRate = 5 - myrate;
+                
+                .rate-book 
+                    while myrate > 0 
+                        input(type="radio", class="rating", value="#{rateValue}", checked="checked")
+                        - myrate--
+                        - rateValue++
+                    while uncheckedRate > 0
+                        input(type="radio", class="rating", value="#{rateValue}")
+                        - uncheckedRate--
+                        - rateValue++
+
+                    
             
                 form(action='/book/comment', method='post')
                     h4 Review the book
@@ -112,8 +122,8 @@ block content
                                         //i ( #{comment.comment_on})
                             .panel-body #{comment.comment}
                             
+    script(src="/javascripts/custom-rating.js")
 
-    script.
-        $("#rating").rating();
+
     
                     
