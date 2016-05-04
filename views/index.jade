@@ -9,11 +9,12 @@ block content
                     h3.dashboard-header Recent Activity
                 .row.left-activity
                     - var i = 0
+                    - historyId = ownRes.length
                     each item in ownRes
                         if i === 3
                             .clearfix(visible-xs-block="")
                             - i = 0
-                        .col-md-4(data-book-id="#{item.book_id._id}", data-user-id="#{item.user_id._id}", data-history-id="#{item._id}")
+                        div(class = "col-md-4 activity-history-#{historyId}")
                             .panel.panel-default
                                 .panel-dashboard-image.panel-heading
                                     a(href="/book/#{item.book_id._id}")
@@ -22,27 +23,8 @@ block content
                                     | You #{item.type} #[a(href="/book/#{item.book_id._id}") #{item.book_id.title}]
                                     .activity-date #{moment(item.update_on).calendar()}
                                     - i++
-                    
-                    // .col-md-4
-                    //     .panel.panel-default
-                    //         .panel-dashboard-image.panel-heading
-                    //             img.thumbnail(src="/images/books/5727a6464dfd88781a4382c1.jpg")
-                    //         .panel-body You read this on Today
-                            
-                    // .col-md-4
-                    //     .panel.panel-default
-                    //         .panel-dashboard-image.panel-heading
-                    //             img.thumbnail(src="/images/books/5727a6464dfd88781a4382c1.jpg")
-                    //         .panel-body You read this on Today
-                            
-                    // .col-md-4
-                    //     .panel.panel-default
-                    //         .panel-dashboard-image.panel-heading
-                    //             img.thumbnail(src="/images/books/5727a6464dfd88781a4382c1.jpg")
-                    //         .panel-body You read this on Today
-                            
-                                
-                        
+                                    - historyId--
+                                     
                     
             .col-md-6
                 .row

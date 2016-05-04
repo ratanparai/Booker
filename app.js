@@ -115,6 +115,12 @@ io.on('connection', function(socket){
   // search result
   sub.subscribe('session.'+socket.handshake.session.id);
   
+  // subscription for user's own dashboard activty update
+  if (typeof socket.handshake.session.userid !== 'undefined') {
+    sub.subscribe(socket.handshake.session.userid);
+  }
+  
+  
   if(socket.handshake.session.followers && socket.handshake.session.followers.length !== 0){
     console.log("subscribing.. to " + socket.handshake.session.followers);
     sub.subscribe(socket.handshake.session.followers);
@@ -124,6 +130,8 @@ io.on('connection', function(socket){
     console.log("Registering to author profile page");
     sub.subscribe("author."+msg);
   });
+  
+  
   
   
   sub.on("message", function(channel, message){
@@ -139,37 +147,65 @@ io.on('connection', function(socket){
         console.log("Profile picture update.");
         socket.emit('refresh profile page', msg.profile_pic_update);
     } else if(typeof msg.startReading !== 'undefined') {
+        if (channle === socket.handshake.session.userid) {
+          
+        } else {
+          socket.emit('notification', msg.startReading);
+        }
         console.log(msg.startReading);
-        socket.emit('notification', msg.startReading);
+        
     } else if (typeof msg.authorProfile !== 'undefined') {
         socket.emit("author profile new book", msg.authorProfile);
     }else if (typeof msg.read !== 'undefined'){
+        if (channel === socket.handshake.session.userid) {
+            socket.emit('dashboard own read', msg.read);
+        } else {
+            msg.read.date = moment(msg.read.date).calendar();
+            
+            socket.emit('read notification', msg.read);
+            socket.emit("dashboard network read", msg.read);
+        }
+        
         console.log("emiting dashboard read");
         
-        msg.read.date = moment(msg.read.date).calendar();
         
-        socket.emit('read notification', msg.read);
-        socket.emit("dashboard network read", msg.read);
     } else if (typeof msg.review !== 'undefined'){
         
+        if (channel === socket.handshake.session.userid) {
+          msg.review.update_on = moment(msg.review.update_on).calendar();
+          socket.emit('dashboard activity review', msg.review);
+        } else {
+          msg.review.update_on = moment(msg.review.update_on).calendar();
+        
+          socket.emit('review notification', msg.review);
+          socket.emit('dashboard network review', msg.review);
+        }
         console.log("emiting review...");
         
-        msg.review.update_on = moment(msg.review.update_on).calendar();
         
-        socket.emit('review notification', msg.review);
-        socket.emit('dashboard network review', msg.review);
         
         
     } else if (typeof msg.startReadingNewBook !== 'undefined') {
         // reading new book
         // dashboard add 
-        msg.startReadingNewBook.last_update = moment(msg.startReadingNewBook.last_update).calendar();
         
-        socket.emit('dashboard reading new book', msg.startReadingNewBook);
-        
+        // check if its user's own activty or his friends 
+        if (channel === socket.handshake.session.userid) {
+          msg.startReadingNewBook.last_update = moment(msg.startReadingNewBook.last_update).calendar();
+          socket.emit('dashboard own new book', msg.startReadingNewBook);
+        } else {
+          msg.startReadingNewBook.last_update = moment(msg.startReadingNewBook.last_update).calendar();
+          socket.emit('dashboard reading new book', msg.startReadingNewBook);
+        }
+
     } else {
-      console.log("Message "+ msg + " on channel " + channel+ " arived");
-      socket.emit('notification', {data: msg});
+      
+      if (channel === socket.handshake.session.userid) {
+        
+      } else {
+        console.log("Message "+ msg + " on channel " + channel+ " arived");
+        socket.emit('notification', {data: msg});
+      }
     }
     
     

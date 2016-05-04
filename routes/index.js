@@ -25,6 +25,7 @@ router.get('/', function(req, res, next) {
             .find({user_id : {$in : friends}})
             .populate('user_id book_id', 'name title profile_picture username')
             .sort('-update_on')
+            .limit(12)
             .exec((err, friendRes) => {
                if(err) console.dir(err);
                console.dir(JSON.stringify(friendRes)); 
@@ -34,6 +35,7 @@ router.get('/', function(req, res, next) {
                     .find({user_id : req.session.userid})
                     .populate('user_id book_id', 'name title profile_picture')
                     .sort('-update_on')
+                    .limit(12)
                     .exec((err, ownRes) => {
                         
                         res.render('index', { 
