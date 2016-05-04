@@ -6,6 +6,7 @@ block content
             .col-md-2
                 .profile-image
                     img.img-circle.profile-main-image(src='/images/profile/' + user.profile_picture)
+                    input(type="hidden", id="user_id", value="#{user._id}")
                 
             .col-md-10
                 .profile-short-info

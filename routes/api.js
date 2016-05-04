@@ -289,8 +289,12 @@ router.post('/progress', function(req, res, next){
                             readingProgress : progResDoc
                         }
                         
-                        pub.publish('profile.progress.'+ userid, JSON.stringify(toPub));
-                        pub.publish(userid, JSON.stringify(toPub));
+                        var toProgPub = {
+                            profileProgress : progResDoc
+                        }
+                        
+                        pub.publish('profile.progress.'+ userid, JSON.stringify(toProgPub));
+                        //pub.publish(userid, JSON.stringify(toPub));
 
                     } )
                     

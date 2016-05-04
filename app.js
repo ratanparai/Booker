@@ -131,6 +131,11 @@ io.on('connection', function(socket){
     sub.subscribe("author."+msg);
   });
   
+  socket.on('subscribe me', (data) => {
+    console.log(data.channel);
+    sub.subscribe(data.channel);
+  });
+  
   
   
   
@@ -147,7 +152,7 @@ io.on('connection', function(socket){
         console.log("Profile picture update.");
         socket.emit('refresh profile page', msg.profile_pic_update);
     } else if(typeof msg.startReading !== 'undefined') {
-        if (channle === socket.handshake.session.userid) {
+        if (channel === socket.handshake.session.userid) {
           
         } else {
           socket.emit('notification', msg.startReading);
@@ -198,11 +203,17 @@ io.on('connection', function(socket){
           socket.emit('dashboard reading new book', msg.startReadingNewBook);
         }
 
+    } else if (typeof msg.profileProgress !== 'undefined') {
+        // profileProgress page 
+        
+        socket.emit('profile progress update', msg.profileProgress);
+        
     } else {
       
       if (channel === socket.handshake.session.userid) {
         
       } else {
+        console.dir(msg);
         console.log("Message "+ msg + " on channel " + channel+ " arived");
         socket.emit('notification', {data: msg});
       }
