@@ -19,7 +19,7 @@ block content
                 h2.title #{bookinfo.title}
                 h4.author-name 
                     a(href='/author/'+author._id) #{author.name}
-                - var thisBookRating = bookinfo.total_rating / bookinfo.total_vote;
+                - var thisBookRating = (bookinfo.total_rating / bookinfo.total_vote).toFixed(1);
                 .single-book-rating
                     - var width = (80 * thisBookRating) / 5;
                     - if (isNaN(width)) {
