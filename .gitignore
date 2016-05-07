@@ -37,8 +37,11 @@ node_modules
 public/images/profile/*
 
 !public/images/profile/default.png
+!public/images/profile/background.jpg
+!public/images/profile/background2.jpg
 
 .vscode/*
 
 typings/*
 .DS_Store
+
