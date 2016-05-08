@@ -45,3 +45,4 @@ public/images/profile/*
 typings/*
 .DS_Store
 
+.idea

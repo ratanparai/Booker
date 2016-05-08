@@ -79,7 +79,7 @@ router.post('/create', function (req, res, next) {
             
         } else {
             console.log('New user created');
-            return res.redirect('/');
+            return res.redirect('/users/login?success=true');
         }
     })
     
@@ -94,11 +94,17 @@ router.get('/login', function(req, res, next){
     if(req.session.username) {
         res.redirect('/');
     }
+
+    var success = false;
+    if (req.query.success) {
+        success = true;
+    }
     
     res.render('login', {
     title : 'Log in',
     login : true,
-    loginInfo : {}
+    loginInfo : {},
+    success : success
     });
 });
 
