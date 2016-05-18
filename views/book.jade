@@ -31,20 +31,25 @@ block content
                     span.rate-in-word #{thisBookRating} (total vote !{bookinfo.total_vote})
                 .book-description !{bookinfo.description}
     hr
-    
+
     .container
         ul.nav.nav-tabs
-            li.active
-                a(data-toggle="tab", href="#progress-tab") Progress
-            li
-                a(data-toggle="tab", href="#read-tab") Read
+            if progress
+                li.active
+                    a(data-toggle="tab", href="#progress-tab") Progress
+            if readers.length !== 0
+                if progress
+                    li
+                else
+                    li.active
+                        a(data-toggle="tab", href="#read-tab") Read
         
         .tab-content
             #progress-tab.tab-pane.fade.in.active
                 .container
                     .row
                         .col-md-12
-                            .panel-body 
+                            .panel-body
                                 .row
                                     each progress in progresses
                                         - number = Math.round(progress.percentage)
@@ -54,12 +59,12 @@ block content
                                                 p.center #{progress.user_id.name}
                                             .progress
                                                 .progress-bar(role="progressbar", aria-valuenow=number  aria-valuemin="0", aria-valuemax="100", style="width:#{number}%") #{number}%
-
-            #read-tab.tab-pane.fade
+            
+            #read-tab.tab-pane.fade.in.active
                 .container
                     .row
                         .col-md-12
-                            .panel-body 
+                            .panel-body
                                 if readers
                                     .row
                                         each reader in readers

@@ -9,7 +9,7 @@ block content
                 .col-md-2
                     a(href='users/view/'+ user.username)
                         img.img-thumbnail(src='/images/profile/' + user.profile_picture)
-                    .title.network-name #{user.name}
+                        .title.network-name #{user.name}
             
     .container
         .row.search-result
@@ -22,7 +22,7 @@ block content
                 .col-md-2
                     a(href='/book/'+ item._id)
                         img.img-thumbnail(src='/images/books/' + item._id + '.jpg')
-                    .title.network-name #{item.title}
+                        .title.network-name #{item.title}
                     - i++
 
                 
@@ -35,6 +35,6 @@ block content
                 .col-md-2
                     a(href='/author/'+ author._id)
                         img.img-thumbnail(src='/images/authors/' + author._id + '.jpg')
-                    .title.network-name #{author.name}
+                        .title.network-name #{author.name}
                     
         
