@@ -14,7 +14,7 @@ var checkAuth = function(req, res, next) {
     
     if(!auth(req) || !auth(req)){
         res.status(401);
-        res.json({message: "Need to provide username and password to access the content"});
+        return res.json({message: "Need to provide username and password to access the content"});
     }
     
     var username = auth(req).name;
@@ -42,12 +42,12 @@ var checkAuth = function(req, res, next) {
                     next();
                 } else {
                     res.status(401);
-                    res.json({message: "Username and password did not match."});
+                    return res.json({message: "Username and password did not match."});
                 }
             });
         } else {
             res.status(401);
-            res.json({message: "Username and password did not match."});
+            return res.json({message: "Username and password did not match."});
         }
     });
 };
@@ -138,10 +138,16 @@ router.get('/search/book', function(req, res,next){
             } else {
                 // if no author found in search
                 goodreads.findBook(title, author, function(err, resBook){
-                    if(err) console.dir(err);
+                    if(err) {
+                        console.dir(err);
+                        return next(err);
+                    }
                     
                     goodreads.saveSingleBookInfo(resBook, function(err, bookInfo){
-                        if(err) return console.log(err);
+                        if(err) {
+                            console.log(err);
+                            return next(err);
+                        }
                         
                         res.status(200);
                         return res.json({
@@ -156,15 +162,21 @@ router.get('/search/book', function(req, res,next){
     } else {
         console.log("Book search without author");
         Book.findOne({title : new RegExp(title, 'i')}, function(err, oneBook){
-            if(err) return console.log(err);
+            if(err) {
+                console.log(err);
+                return next(err);
+            }
             
             if(oneBook) {
                 console.log("Book found");
-                return res.json(oneBook);
+                return res.json({book: oneBook});
             } else {
                 // request for book info
                 goodreads.findBook(title, null, function(err, withoutAuthorRes){
-                    if(err) return console.dir(err);
+                    if(err) {
+                        console.dir(err);
+                        return next(err);
+                    }
                     
                     goodreads.saveSingleBookInfo(withoutAuthorRes, function(err, aBookInfo){
                         if(err) {
