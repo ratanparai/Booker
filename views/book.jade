@@ -34,45 +34,61 @@ block content
 
     .container
         ul.nav.nav-tabs
-            if progress
+            if progresses.length !== 0
                 li.active
                     a(data-toggle="tab", href="#progress-tab") Progress
             if readers.length !== 0
-                if progress
+                if progresses.length !== 0
                     li
+                        a(data-toggle="tab", href="#read-tab") Read
                 else
                     li.active
                         a(data-toggle="tab", href="#read-tab") Read
         
         .tab-content
-            #progress-tab.tab-pane.fade.in.active
-                .container
-                    .row
-                        .col-md-12
-                            .panel-body
-                                .row
-                                    each progress in progresses
-                                        - number = Math.round(progress.percentage)
-                                        .col-md-2
-                                            a(href="/users/view/" + progress.user_id.username)
-                                                img.img-circle(src='/images/profile/' + progress.user_id.profile_picture)
-                                                p.center #{progress.user_id.name}
-                                            .progress
-                                                .progress-bar(role="progressbar", aria-valuenow=number  aria-valuemin="0", aria-valuemax="100", style="width:#{number}%") #{number}%
-            
-            #read-tab.tab-pane.fade.in.active
-                .container
-                    .row
-                        .col-md-12
-                            .panel-body
-                                if readers
+            if progresses.length !== 0
+                #progress-tab.tab-pane.fade.in.active
+                    .container
+                        .row
+                            .col-md-12
+                                .panel-body
                                     .row
-                                        each reader in readers
+                                        each progress in progresses
+                                            - number = Math.round(progress.percentage)
                                             .col-md-2
-                                                a(href="/users/view/" + reader.user_id.username)
-                                                    img.img-circle(src='/images/profile/' + reader.user_id.profile_picture)
-                                                    p.center #{reader.user_id.name}
-                                                
+                                                a(href="/users/view/" + progress.user_id.username)
+                                                    img.img-circle(src='/images/profile/' + progress.user_id.profile_picture)
+                                                    p.center #{progress.user_id.name}
+                                                .progress
+                                                    .progress-bar(role="progressbar", aria-valuenow=number  aria-valuemin="0", aria-valuemax="100", style="width:#{number}%") #{number}%
+            if readers.length !== 0
+                if progresses.length !== 0
+                    #read-tab.tab-pane
+                        .container
+                            .row
+                                .col-md-12
+                                    .panel-body
+                                        if readers
+                                            .row
+                                                each reader in readers
+                                                    .col-md-2
+                                                        a(href="/users/view/" + reader.user_id.username)
+                                                            img.img-circle(src='/images/profile/' + reader.user_id.profile_picture)
+                                                            p.center #{reader.user_id.name}
+                else 
+                    #read-tab.tab-pane.fade.in.active
+                        .container
+                            .row
+                                .col-md-12
+                                    .panel-body
+                                        if readers
+                                            .row
+                                                each reader in readers
+                                                    .col-md-2
+                                                        a(href="/users/view/" + reader.user_id.username)
+                                                            img.img-circle(src='/images/profile/' + reader.user_id.profile_picture)
+                                                            p.center #{reader.user_id.name}
+                                                    
 
     hr
     .container
