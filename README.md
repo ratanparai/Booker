@@ -1,4 +1,6 @@
 # Booker
+[![Dependency Status](https://gemnasium.com/badges/github.com/ratanparai/Booker.svg)](https://gemnasium.com/github.com/ratanparai/Booker)
+
 Node.js , Redis PubSub, Socket.io , Express, MongoDB Book reading progress tracker.
 
 #Installation Instruction
