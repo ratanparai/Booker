@@ -25,3 +25,5 @@ Visual Book reading progress on users profile update realtime as user turn pages
 
 ### RESTFull API
 The RESTFull API allow any ebook reader app to integrate with the booker server. Sample [Booker (Windows only](https://github.com/ratanparai/Booker-desktop)  ebook reader app can be found [here](https://github.com/ratanparai/Booker-desktop)
+
+For API documentation read [WIKI](https://github.com/ratanparai/Booker/wiki) 
