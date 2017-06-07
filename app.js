@@ -44,8 +44,9 @@ var app = express();
 
 var http = require('http');
 var server = http.createServer(app);
-var io = require("socket.io").listen(server);
-server.listen(8056);
+var io = require("socket.io")(server);
+
+
 
 
 // for processing dashboad document
@@ -300,4 +301,5 @@ app.use(function(err, req, res, next) {
 
 console.log('server running at port 3000!');
 
-module.exports = app;
+server.listen(3000);
+//module.exports = app;

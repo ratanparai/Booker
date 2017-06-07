@@ -27,7 +27,7 @@ $('#profile-update-form').submit(function(event){
 
 
 // SOCKET.IO 
-var socket = io.connect('http://localhost:8056');
+var socket = io.connect();
 
 socket.on('refresh profile page', function(data){
     console.log("refresh profile page");
