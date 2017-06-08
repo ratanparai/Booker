@@ -1,0 +1,29 @@
+version: "3"
+services:
+    web:
+        image: ratanparai/booker
+        ports:
+            - "3000:3000"
+        links:
+            - redis
+            - mongo
+        deploy:
+            replicas: 5
+            
+        networks:
+            - booker
+
+    redis:
+        image: redis
+        volumes:
+            - ./data:/data
+        networks:
+            - booker
+
+    mongo:
+        image: mongo
+        networks:
+            - booker
+networks:
+    booker:
+

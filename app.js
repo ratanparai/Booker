@@ -7,14 +7,14 @@ var bodyParser = require('body-parser');
 
 // redis
 var redis = require('redis');
-global.pub = redis.createClient();
-var rClinet = redis.createClient();
+global.pub = redis.createClient('6379', 'redis');
+var rClinet = redis.createClient('6379', 'redis');
 
 
 var ExpressSession = require('express-session');
 var connectRedis = require('connect-redis');
 var RedisStore = connectRedis(ExpressSession);
-var rClient = redis.createClient();
+var rClient = redis.createClient('6379', 'redis');
 var sessionStore = new RedisStore({client: rClient});
 
 var session = ExpressSession({
@@ -26,7 +26,7 @@ var session = ExpressSession({
 
 
 var mongoose = require('mongoose');
-mongoose.connect("mongodb://localhost/Booker")
+mongoose.connect("mongodb://mongo/Booker")
 
 
 
@@ -50,7 +50,7 @@ var io = require("socket.io")(server);
 
 
 // for processing dashboad document
-dashSub = redis.createClient();
+dashSub = redis.createClient('6379', 'redis');
 dashSub.subscribe('dashboard');
 
 var Dashboard = require('./models/dashboard');
@@ -111,7 +111,7 @@ io.on('connection', function(socket){
   global.socket = socket;
   
   //subscription
-  var sub = redis.createClient();
+  var sub = redis.createClient('6379', 'redis');
   
   // search result
   sub.subscribe('session.'+socket.handshake.session.id);
